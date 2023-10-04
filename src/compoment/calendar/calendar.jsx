@@ -1,0 +1,286 @@
+import style from "./calendar.module.scss";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+import { db } from "../../config";
+
+import { set, ref, onValue } from "firebase/database";
+import { UserContext } from "../../usecontex/usecontex";
+
+const Calendar = () => {
+  const uid = uuidv4();
+  const username = localStorage.getItem("user");
+  const { arrDate, readDatabase, writeDatabase } = useContext(UserContext);
+  const [today, setToday] = useState(new Date());
+  const [daysss, setday] = useState(today.getDay());
+  const [dataDayOff, setDataDayOff] = useState();
+  const [month, setMonth] = useState(today.getMonth());
+  const [year, setYear] = useState(today.getFullYear());
+  const [hours, setHours] = useState(today.getHours());
+  const [minutes, setMinutes] = useState(today.getMinutes());
+
+  const [arrLastDate, setarrLastDate] = useState([]);
+  const [arrNextDate, setarrNextDate] = useState([]);
+  const [events, setEvents] = useState();
+  const [valueEvent, setValueEvent] = useState();
+  const [dayEvent, setDayEvent] = useState();
+  const [valueSelect, setValueSelect] = useState("nooff");
+  const [valueOffday, setvalueOffday] = useState([]);
+  let indexEditDay;
+  let arrr = [];
+  let arrDates = [];
+  useEffect(() => {
+    readDatabase(`datadayoff/data`, setDataDayOff);
+  }, []);
+
+  if (arrDate !== undefined && arrDate !== undefined && arrDate !== null) {
+    indexEditDay = arrDate.findIndex(
+      (data) => data.month === month && data.year === year
+    );
+  }
+
+  if (indexEditDay !== -1 && indexEditDay !== undefined) {
+    arrDates = arrDate[indexEditDay].value;
+  }
+
+  const months = [
+    "Tháng Một",
+    "Tháng Hai",
+    "Tháng Ba",
+    "Tháng Tư",
+    "Tháng Năm",
+    "Tháng Sáu",
+    "Tháng Bảy",
+    "Tháng Tám",
+    "Tháng Chín",
+    "Tháng Mười",
+    "Tháng Mười Một",
+    "Tháng Mười Hai",
+  ];
+
+  useEffect(() => {
+    const firstDay = new Date(year, month, 1).getDay(); //ngày đầu tiên của tháng trước là thứ mấy(5)
+    const prevDay = new Date(year, month, 0).getDate(); // ngày cuối cùng của tháng trước (31)
+    const lastDay = new Date(year, month + 1, 0).getDate(); // ngày cuối cùng của tháng  này(30)
+    const firsPrevDay = new Date(year, month + 1, 0).getDay();
+    const nextDays = 7 - firsPrevDay;
+    let arrLastDates = [];
+    const arrNextDates = [];
+    for (let i = firstDay; i > 0; i--) {
+      arrLastDates.push(
+        <div key={i} className={style.prevday}>
+          {prevDay - i + 1}
+        </div>
+      );
+    }
+
+    setarrNextDate(arrLastDates);
+    for (let i = 1; i < nextDays; i++) {
+      arrNextDates.push(
+        <div key={i} className={style.prevday}>
+          {i}
+        </div>
+      );
+    }
+
+    setarrLastDate(arrNextDates);
+    let values = [];
+
+    for (let i = 1; i <= lastDay; i++) {
+      if (
+        year < today.getFullYear() ||
+        (month < today.getMonth() && year === today.getFullYear())
+      ) {
+        values.push({ value: i, key: i, isSelect: "nooff" });
+      } else if (
+        year === today.getFullYear() &&
+        month === today.getMonth() &&
+        i < today.getDate()
+      ) {
+        values.push({ value: i, key: i, isSelect: "nooff" });
+      } else values.push({ value: i, key: i });
+    }
+
+    if (arrDate === null) {
+      arrr = [{ month: month, year: year, value: values }];
+      console.log("run null");
+      writeDatabase(`/user/${username}/value`, arrr);
+    }
+
+    if (indexEditDay === -1) {
+      let Arrdata = [...arrDate, { month: month, year: year, value: values }];
+      writeDatabase(`/user/${username}/value`, Arrdata);
+    }
+    if (indexEditDay !== -1 && arrDate) {
+      let arrData = [...arrDate];
+      let dataValue = [];
+
+      arrData[indexEditDay].value.map((day, index) => {
+        if (day.value - 1 < daysss && !day.isSelect) {
+          arrData[indexEditDay].value[index] = {
+            value: index + 1,
+            key: index + 1,
+            isSelect: "nooff",
+          };
+        }
+      });
+
+      writeDatabase(`/user/${username}/value`, arrData);
+    }
+  }, [today, year, month, arrDate]);
+
+  const handerClick = (i) => {
+    setDayEvent(i);
+  };
+
+  const handerClickprev = () => {
+    setMonth((prev) => {
+      if (prev === 0) {
+        setYear(year - 1);
+        return 11;
+      } else {
+        return prev - 1;
+      }
+    });
+  };
+  const handerClicknext = () => {
+    setMonth((prev) => {
+      if (prev < 11) {
+        return prev + 1;
+      } else {
+        setYear(year + 1);
+        return 0;
+      }
+    });
+  };
+
+  const addEvent = () => {
+    let arrday = [...arrDate];
+    arrday[indexEditDay].value[dayEvent].isSelect = valueSelect;
+    writeDatabase(`/user/${username}/value`, arrday);
+    if (dataDayOff !== null) {
+      let dataEventDay = [
+        ...dataDayOff,
+        {
+          username: username,
+          titel: valueSelect,
+          timeHours: hours,
+          timeMinutes: minutes,
+          day: dayEvent,
+          month: month,
+          year: year,
+        },
+      ];
+      writeDatabase(`datadayoff`, dataEventDay);
+    }
+    if (dataDayOff === null) {
+      let dataEventDay = [
+        {
+          username: username,
+          titel: valueSelect,
+          timeHours: hours,
+          timeMinutes: minutes,
+          day: dayEvent,
+          month: month,
+          year: year,
+        },
+      ];
+      writeDatabase(`datadayoff`, dataEventDay);
+    }
+  };
+  const handerSelect = (e) => setValueSelect(e.target.value);
+  useEffect(() => {
+    if (dataDayOff !== null && dataDayOff !== undefined) {
+      setvalueOffday(
+        dataDayOff.filter((day) => {
+          return (
+            day.month === month && day.year === year && day.day === dayEvent
+          );
+        })
+      );
+    }
+  }, [dayEvent]);
+
+  console.log(valueOffday);
+  return (
+    <div className={style.body}>
+      <div className={style.container}>
+        <div className={style.month}>
+          <i
+            onClick={() => handerClickprev()}
+            className="fa-solid fa-chevron-left"></i>
+
+          <div>
+            {months[month]}
+            {year}
+          </div>
+          <i
+            onClick={() => handerClicknext()}
+            className="fa-solid fa-chevron-right"></i>
+        </div>
+        <div className={style.month}>
+          <div>CN</div>
+          <div>Thứ 2</div>
+          <div>Thứ 3</div>
+          <div>Thứ 4</div>
+          <div>Thứ 5</div>
+          <div>Thứ 6</div>
+          <div>Thứ 7</div>
+        </div>
+        <div className={style.days}>
+          {arrNextDate}
+          {arrDates.map((day) => (
+            <div
+              className={`${day.event && style.active} ${style.day}`}
+              key={day.key}
+              onClick={() => handerClick(day.value - 1)}>
+              <p
+                className={`${style.colordays} ${
+                  day.isSelect && style[`${day.isSelect}`]
+                }`}>
+                {day.value}
+              </p>
+            </div>
+          ))}
+          {arrLastDate}
+        </div>
+      </div>
+      <div className={style.events}>
+        <h2>
+          {dayEvent &&
+            `${hours}:${minutes} ${dayEvent + 1} / ${month + 1} / ${year}`}
+        </h2>
+        <p className="mb-2">Đăng ký nghỉ :</p>
+
+        <select className="form-select" onChange={handerSelect}>
+          <option value="nooff">Không nghỉ</option>
+          <option value="offfullday">Nghỉ nguyên ngày</option>
+          <option value="offmorning">Nghỉ buổi sáng</option>
+          <option value="offafternoon">Nghỉ buổi chiều</option>
+        </select>
+        <label htmlFor="inputref" className="mt-2">
+          Đăng ký làm thêm
+        </label>
+        <input id="inputref" type="numbe" placeholder="Nhập số giờ" />
+        <button className="btn btn-primary" onClick={addEvent}>
+          Cập nhật
+        </button>
+        <div>
+          {valueOffday !== undefined &&
+            valueOffday.map((data) => {
+              console.log(data);
+              return (
+                <p>{`${data.username} đăng ký nghỉ ${
+                  data.titel === "offfullday" ? "Nghỉ nguyên ngày" : ""
+                }${data.titel === "offmorning" ? "Nghỉ buổi sáng" : ""}${
+                  data.titel === "offafternoon" ? "Nghỉ buổi chiều" : ""
+                } lúc ${data.timeHours}:${data.timeMinutes} ngày ${
+                  data.day + 1
+                }/${data.month + 1}/${data.year}`}</p>
+              );
+            })}
+        </div>
+      </div>
+    </div>
+  );
+};
+export default Calendar;

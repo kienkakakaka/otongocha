@@ -1,0 +1,11 @@
+.container {
+  overflow-x: auto;
+  background-color: white;
+
+  .name {
+    min-width: 11rem;
+  }
+  .nameclass {
+    min-width: 7rem;
+  }
+}
