@@ -6,7 +6,8 @@ import { set, ref, onValue } from "firebase/database";
 export const UserContext = React.createContext();
 export const UserProvider = ({ children }) => {
   const username = localStorage.getItem("user");
-
+  const [indexArr, setIndexArr] = useState();
+  const [indexItem, setIndexItem] = useState();
   const [isLogin, setIsLogin] = useState();
   const [activeSidebar, setActiveSidebar] = useState(false);
   const [data, setdata] = useState([]);
@@ -20,6 +21,7 @@ export const UserProvider = ({ children }) => {
   }
 
   const [user, setUser] = useState();
+  const [myuser, setmyUser] = useState();
   const [arrDate, setArrDate] = useState(() => {
     onValue(ref(db, `/${username}/data`), (snapshot) => {
       return snapshot.val();
@@ -66,6 +68,12 @@ export const UserProvider = ({ children }) => {
         username,
         valueCar,
         arr,
+        setmyUser,
+        myuser,
+        indexArr,
+        setIndexArr,
+        indexItem,
+        setIndexItem,
       }}>
       {children}
     </UserContext.Provider>

@@ -72,7 +72,7 @@ function Logins() {
         <button type="submit" value="submit" onClick={HanderSubmit}>
           Login
         </button>
-        <button onClick={logOut}>logout</button>
+        {/* <button onClick={logOut}>logout</button> */}
         <span>Or use your account</span>
         <div className={style["social-container"]}>
           <a href="#" className={style["social"]}>

@@ -1,8 +1,17 @@
 import React, { useContext, useEffect, useState } from "react";
+import Select from "react-select";
 import { arrCar } from "./datacar copy";
 import { UserContext } from "../../usecontex/usecontex";
 import style from "./event.module.scss";
 const Event = () => {
+  const datauserktv = [
+    { value: "kienktv", label: "kienktv" },
+    { value: "cuongktv", label: "cuongktv" },
+    { value: "ngocktv", label: "ngocktv" },
+    { value: "hienktv", label: "hienktv" },
+    { value: "hungktv", label: "hungktv" },
+    { value: "datktv", label: "datktv" },
+  ];
   const [selectTypeCar, setSelectTypeCar] = useState([]);
   const { writeDatabase, username, valueCar } = useContext(UserContext);
   const [onCar, setOnCar] = useState("");
@@ -10,15 +19,17 @@ const Event = () => {
   const [onTime, setOnTime] = useState("");
   const [onTimeOut, setOnTimeOut] = useState("");
   const [typeNumber, setTypeNumber] = useState("");
-  const [colorCar, setColorCar] = useState("#333");
+  const [colorCar, setColorCar] = useState("black");
   const [ktvJoin, setKtvJoin] = useState("");
   const [numberKilometer, setNumberKilometer] = useState(0);
-  const [typeSuccess, setTypeSuccess] = useState(true);
+  const [typeSuccess, setTypeSuccess] = useState(false);
+  const [numberVin, setNumberVin] = useState(0);
 
   const [hinderForm, setHinderForm] = useState(false);
   const [hinderEdit, setHinderEdit] = useState(false);
   const [indexEdit, setIndexEdit] = useState(-1);
   const handerClick = (e) => {
+    console.log(valueCar);
     e.preventDefault();
     if (valueCar === null) {
       writeDatabase(`eventCar`, [
@@ -30,8 +41,11 @@ const Event = () => {
           timeout: onTimeOut,
           typeNumber: typeNumber,
           colorCar: colorCar,
-          ktvJoin: ktvJoin,
+
           numberKilometer: numberKilometer,
+          ktvjoin: ktvJoin,
+          numberVin: numberVin,
+          typeSuccess: typeSuccess,
         },
       ]);
     } else {
@@ -45,8 +59,11 @@ const Event = () => {
           timeout: onTimeOut,
           typeNumber: typeNumber,
           colorCar: colorCar,
-          ktvJoin: ktvJoin,
+
           numberKilometer: numberKilometer,
+          ktvjoin: ktvJoin,
+          numberVin: numberVin,
+          typeSuccess: typeSuccess,
         },
       ]);
     }
@@ -84,6 +101,10 @@ const Event = () => {
         Conten: onTextCar,
         time: onTime,
         timeout: onTimeOut,
+        typeNumber: typeNumber,
+        colorCar: colorCar,
+        ktvJoin: ktvJoin,
+        numberKilometer: numberKilometer,
       };
       console.log(data);
       writeDatabase(`eventCar`, data);
@@ -92,6 +113,10 @@ const Event = () => {
       setOnTime("");
       setOnCar("");
       setOnTextCar("");
+      setTypeNumber("");
+      setColorCar("#333");
+      setKtvJoin("");
+      setNumberKilometer("");
       setHinderForm(true);
       setIndexEdit(-1);
       setHinderEdit(false);
@@ -103,7 +128,20 @@ const Event = () => {
         className={`btn btn-primary mb-3 mt-3 ${style.btn}`}
         onClick={() => {
           setHinderForm((pre) => !pre);
-          setHinderEdit((pre) => !pre);
+          setHinderEdit(false);
+
+          setSelectTypeCar("");
+          setOnTimeOut("");
+          setOnTime("");
+          setOnCar("");
+          setOnTextCar("");
+          setTypeNumber("");
+          setColorCar("#fff");
+          setKtvJoin("");
+          setNumberKilometer("");
+          setHinderForm(true);
+          setIndexEdit(-1);
+          setHinderEdit(false);
         }}>
         {hinderForm ? "x" : "+"}
       </button>
@@ -158,6 +196,18 @@ const Event = () => {
             className="form-control"
             onChange={(e) => setOnTextCar(e.target.value)}
           />
+        </div>
+        <div className="mb-3 col-4">
+          <label for="exampleColorInput" class="form-label">
+            Số VIN
+          </label>
+          <input
+            type="number"
+            class="form-control "
+            onChange={(e) => setNumberVin(e.target.value)}
+            id="exampleColorInput"
+            value={numberKilometer}
+            title="Choose your color"></input>
         </div>
         <div className="col-4">
           <label htmlFor="time" className="form-label">
@@ -217,14 +267,13 @@ const Event = () => {
           <label htmlFor="timeout" className="form-label">
             KTV tham gia
           </label>
-          <input
-            value={ktvJoin}
-            type="text"
-            className="form-control"
-            id="timeout"
-            onChange={(e) => {
-              setKtvJoin(e.target.value);
-            }}
+          <Select
+            isMulti
+            name="colors"
+            onChange={(option) => setKtvJoin(option)}
+            options={datauserktv}
+            className="basic-multi-select"
+            classNamePrefix="select"
           />
         </div>
         <div className="mb-3 col-4">
@@ -244,6 +293,7 @@ const Event = () => {
             <input
               class="form-check-input"
               type="radio"
+              onClick={() => setTypeSuccess((pre) => !pre)}
               name="flexRadioDefault"
               id="flexRadioDefault1"
             />
@@ -254,16 +304,16 @@ const Event = () => {
         </div>
 
         <button
-          className={`btn btn-primary mt-3 ml-3 ${
-            !hinderEdit && style.hinder
-          } ${style.btn}`}
+          className={`btn btn-primary mt-3 ml-3 ${hinderEdit && style.hinder} ${
+            style.btn
+          }`}
           onClick={(e) => handerClick(e)}>
           Update
         </button>
         <button
-          className={`btn btn-primary mt-3 ml-3 ${hinderEdit && style.hinder} ${
-            style.btn
-          }`}
+          className={`btn btn-primary mt-3 ml-3 ${
+            !hinderEdit && style.hinder
+          } ${style.btn}`}
           onClick={(e) => handerClickEdit(e)}>
           Chỉnh sửa
         </button>
@@ -276,16 +326,12 @@ const Event = () => {
             <th>Hãng</th>
             <th>Xe</th>
             <th>Biển số</th>
-
-            <th>Thời gian vào</th>
-            <th>Thời gian ra</th>
+            <th>Số Vin</th>
             <th style={{ whiteSpace: "nowrap" }}>Hộp số</th>
             <th>Màu xe</th>
-            <th>KTV</th>
             <th>Số KM</th>
-            <th>Đạt</th>
-
-            <th>Event</th>
+            <th>Thời gian vào</th>
+            <th>Thời gian ra</th>
           </tr>
         </thead>
         <tbody>
@@ -297,18 +343,16 @@ const Event = () => {
                 <td>{data.TypeCar}</td>
                 <td style={{ whiteSpace: "nowrap" }}>{data.Car}</td>
                 <td>{data.Conten}</td>
-                <td>{data.time}</td>
-                <td>{data.timeout}</td>
-
+                <td>{data.numberVin}</td>
                 <td style={{ whiteSpace: "nowrap" }}>{data.typeNumber}</td>
                 <td
                   className="d-flex justify-content-center align-items-center "
                   style={{ color: `${data.colorCar}`, fontSize: "25px" }}>
                   <i class="fa-solid fa-car"></i>
                 </td>
-                <td>{data.ktvJoin}</td>
                 <td>{data.numberKilometer}</td>
-                <td>{data.typeSuccess}</td>
+                <td>{data.time}</td>
+                <td>{data.timeout}</td>
 
                 <td className="d-flex flex-row">
                   <button

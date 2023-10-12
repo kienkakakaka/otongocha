@@ -47,9 +47,9 @@ const Table = () => {
           id="test-table-xls-button"
           className="download-table-xls-button btn btn-primary"
           table="table-to-xls"
-          filename="test"
+          filename={` bảng công tháng ${month + 1}`}
           sheet="tablexls"
-          buttonText="Xuất file Elx"
+          buttonText="Xuất file Excel"
         />
       </div>
       <table id="table-to-xls" className="table table-bordered border-black">

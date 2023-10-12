@@ -1,97 +1,75 @@
 import React, { useContext } from "react";
 import { UserContext } from "../../usecontex/usecontex";
-
+import Chart4 from "../chart/chart4";
+import Chart5 from "../chart/chart5";
+import Chart2 from "../chart/Chart2";
+import style from "./conten.module.scss";
+import Chart3 from "../chart/Chart3";
+import DemoColumn from "../chart/chart6";
 const Conten = () => {
   const { valueCar } = useContext(UserContext);
   return (
-    <div>
+    <div className={style.container}>
       <div className="main-content">
-        <div className="row">
-          <div className="col-lg-3 col-md-6 col-sm-6">
-            <div className="card card-stats">
-              <div className="card-header">
-                <div className="icon icon-warning">
-                  <span className="material-icons">equalizer</span>
-                </div>
+        <div className="row d-flex">
+          <div className="col-lg-4 col-md-6 col-sm-6">
+            <div className={style.itemconten}>
+              <div className={style.contenchart2}>
+                <Chart2 />
               </div>
-              <div className="card-content">
+              <div>
                 <p className="category">
                   <strong>Tháng này</strong>
                 </p>
-                <h3 className="card-title">... TỈ VND</h3>
-              </div>
-              <div className="card-footer">
-                <div className="stats">
-                  <i className="material-icons text-info">info</i>
-                  <a href="#pablo">See detailed report</a>
-                </div>
+                <h4 className="card-title">1.5 TỈ VND</h4>
+                <p>1 - 10 /10/2023</p>
               </div>
             </div>
           </div>
-          <div className="col-lg-3 col-md-6 col-sm-6">
-            <div className="card card-stats">
-              <div className="card-header">
-                <div className="icon icon-rose">
-                  <span className="material-icons">shopping_cart</span>
-                </div>
+
+          <div className="col-lg-4 col-md-6 col-sm-6">
+            <div className={style.itemconten}>
+              <div className={style.contenchart2}>
+                <DemoColumn />
               </div>
-              <div className="card-content">
+              <div>
+                <p className="category">
+                  <strong>Tuần này</strong>
+                </p>
+                <h4 className="card-title">500 TR VND</h4>
+                <p>1 - 10 /10/2023</p>
+              </div>
+            </div>
+          </div>
+          <div className="col-lg-4 col-md-6 col-sm-6">
+            <div className={style.itemconten}>
+              <div className={style.contenchart2}>
+                <Chart2 />
+              </div>
+              <div>
                 <p className="category">
                   <strong>Đơn hàng</strong>
                 </p>
-                <h3 className="card-title">... Đơn hàng</h3>
-              </div>
-              <div className="card-footer">
-                <div className="stats">
-                  <i className="material-icons">local_offer</i> Product-wise
-                  sales
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="col-lg-3 col-md-6 col-sm-6">
-            <div className="card card-stats">
-              <div className="card-header">
-                <div className="icon icon-success">
-                  <span className="material-icons"> attach_money </span>
-                </div>
-              </div>
-              <div className="card-content">
-                <p className="category">
-                  <strong>Hôm nay</strong>
-                </p>
-                <h3 className="card-title">... TR VND</h3>
-              </div>
-              <div className="card-footer">
-                <div className="stats">
-                  <i className="material-icons">date_range</i> Weekly sales
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="col-lg-3 col-md-6 col-sm-6">
-            <div className="card card-stats">
-              <div className="card-header">
-                <div className="icon icon-info">
-                  <span className="material-icons"> follow_the_signs </span>
-                </div>
-              </div>
-              <div className="card-content">
-                <p className="category">
-                  <strong>Nhân sự</strong>
-                </p>
-                <h3 className="card-title">... Người</h3>
-              </div>
-              <div className="card-footer">
-                <div className="stats">
-                  <i className="material-icons">update</i> Just Updated
-                </div>
+                <h4 className="card-title">70 đơn hàng</h4>
+                <p>1 - 10 /10/2023</p>
               </div>
             </div>
           </div>
         </div>
 
         <div className="row">
+          <div className="col-lg-7 col-md-12">
+            <h2>Doanh số Tuần này</h2>
+            <Chart4 />
+          </div>
+          {/* <div className="col-lg-5 col-md-12">
+            <h2>Tỉ lệ hoàn thành doanh số</h2>
+            <Chart5 />
+          </div> */}
+          <div className="col-lg-5 col-md-12">
+            <h2>Doanh số</h2>
+            <Chart3 />
+          </div>
           <div className="col-lg-7 col-md-12">
             <div className="card">
               <div className="card-header card-header-text">

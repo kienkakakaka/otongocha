@@ -1,8 +1,18 @@
 import React, { useContext } from "react";
 import { UserContext } from "../../usecontex/usecontex";
 import { Link } from "react-router-dom";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import AspectRatioIcon from "@mui/icons-material/AspectRatio";
+import DateRangeIcon from "@mui/icons-material/DateRange";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import GridOnIcon from "@mui/icons-material/GridOn";
+import BorderColorIcon from "@mui/icons-material/BorderColor";
+import AppsIcon from "@mui/icons-material/Apps";
 
+import ExtensionIcon from "@mui/icons-material/Extension";
 const Sidebar = () => {
+  const username = localStorage.getItem("user");
+
   const { activeSidebar } = useContext(UserContext);
   return (
     <div>
@@ -14,77 +24,77 @@ const Sidebar = () => {
           </h3>
         </div>
         <ul className="list-unstyled components">
-          <li className="active">
-            <Link to="/" className="dashboard">
-              <i className="material-icons">dashboard</i>
-              <span>Tổng quan</span>
-            </Link>
-          </li>
+          {username === "admin" && (
+            <li>
+              <Link to="/" className="dashboard">
+                <DashboardIcon />
+                <span>Tổng quan</span>
+              </Link>
+            </li>
+          )}
 
-          <li className="dropdown">
-            <Link to="/events" data-toggle="collapse" aria-expanded="false">
-              <i className="material-icons">aspect_ratio</i>
-              <span>Sự kiện</span>
-            </Link>
-          </li>
+          {username === "admin" && (
+            <li className="dropdown">
+              <Link to="/events" data-toggle="collapse" aria-expanded="false">
+                <AspectRatioIcon />
+                <span>Sự kiện</span>
+              </Link>
+            </li>
+          )}
           <li className="">
             <Link to="/calendar">
-              <i className="material-icons">date_range</i>
+              <DateRangeIcon />
               <span>Lịch</span>
             </Link>
           </li>
-          <li className="dropdown">
-            <Link to="/tables" data-toggle="collapse" aria-expanded="false">
-              <i className="material-icons">grid_on</i>
-              <span>Bảng công</span>
-            </Link>
-          </li>
-          <li className="dropdown">
-            <Link
-              to="/form"
-              href="#pageSubmenu2"
-              data-toggle="collapse"
-              aria-expanded="false">
-              <i className="material-icons">apps</i>
-              <span>Biểu mẫu</span>
-            </Link>
-          </li>
-
-          <li className="dropdown">
+          {username === "admin" && (
+            <li className="dropdown">
+              <Link to="/tables" data-toggle="collapse" aria-expanded="false">
+                <GridOnIcon />
+                <span>Bảng công</span>
+              </Link>
+            </li>
+          )}
+          {username === "admin" && (
+            <li className="dropdown">
+              <Link
+                to="/form"
+                href="#pageSubmenu2"
+                data-toggle="collapse"
+                aria-expanded="false">
+                <AppsIcon />
+                <span>Đơn hàng </span>
+              </Link>
+            </li>
+          )}
+          {/* <li className="dropdown">
             <Link to="/charts" data-toggle="collapse" aria-expanded="false">
-              <i className="material-icons">equalizer</i>
+              <EqualizerIcon />
 
               <span>Biểu đồ</span>
             </Link>
-          </li>
+          </li> */}
           <li className="dropdown">
-            <a
-              href="#pageSubmenu4"
-              data-toggle="collapse"
-              aria-expanded="false">
-              <i className="material-icons">extension</i>
-              <span>ui element</span>
-            </a>
+            <Link to="/table2" data-toggle="collapse" aria-expanded="false">
+              <ExtensionIcon />
+              <span>Bảng lương</span>
+            </Link>
           </li>
 
-          <li className="dropdown">
-            <a
-              href="#pageSubmenu5"
-              data-toggle="collapse"
-              aria-expanded="false">
-              <i className="material-icons">border_color</i>
-              <span>forms</span>
-            </a>
-          </li>
+          {username === "admin" && (
+            <li className="dropdown">
+              <Link to="/manage" data-toggle="collapse" aria-expanded="false">
+                <BorderColorIcon />
+                <span>Quản lý</span>
+              </Link>
+            </li>
+          )}
 
           <li className="dropdown">
-            <a
-              href="#pageSubmenu7"
-              data-toggle="collapse"
-              aria-expanded="false">
-              <i className="material-icons">content_copy</i>
-              <span>Pages</span>
-            </a>
+            <Link to="/myself" data-toggle="collapse" aria-expanded="false">
+              <ContentCopyIcon />
+              <span>Cá nhân</span>
+            </Link>
           </li>
         </ul>
       </nav>

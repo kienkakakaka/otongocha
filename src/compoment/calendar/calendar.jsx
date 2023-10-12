@@ -200,7 +200,6 @@ const Calendar = () => {
     }
   }, [dayEvent]);
 
-  console.log(valueOffday);
   return (
     <div className={style.body}>
       <div className={style.container}>

@@ -10,14 +10,12 @@ const Dashboard = () => {
   return (
     <div>
       <Sidebar />
-      {arrDate ? (
-        <div id="content" className={activeSidebar ? "active" : ""}>
-          <Navbar />
-          <Conten />
-        </div>
-      ) : (
-        <AmazonLoader />
-      )}
+
+      <div id="content" className={activeSidebar ? "active" : ""}>
+        <Navbar />
+        <Conten />
+      </div>
+
       {/* <div id="content" className={activeSidebar ? "active" : ""}>
         <Navbar />
         <Conten />

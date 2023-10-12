@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css?family=Nova+Slim&display=swap");
 @import url("./bootstrap.min.css");
+
 body,
 html {
   line-height: 1.8;
@@ -119,7 +120,7 @@ a:focus {
 
 #sidebar {
   position: fixed;
-  height: 100vh !important;
+  /* height: 100vh !important; */
   top: 0;
   bottom: 0;
   left: 0;
@@ -212,10 +213,11 @@ a:focus {
 
 #sidebar ul li a span {
   text-transform: capitalize;
+  margin-left: 20px;
   display: inline-block;
 }
 
-#sidebar ul li a i {
+#sidebar ul li a {
   position: relative;
   margin-right: 10px;
   top: 5px;
@@ -250,12 +252,12 @@ a:focus {
 }
 
 .navbar {
-  background-color: #2196f3;
-  color: #ffffff;
+  background-color: #eeeeee;
+  color: black;
 }
 
 .navbar-brand {
-  color: #ffffff;
+  color: rgb(51, 51, 51);
 }
 
 .navbar button {
@@ -263,7 +265,7 @@ a:focus {
   border: none;
 }
 .navbar button span {
-  color: #fff;
+  color: rgb(51, 51, 51);
 }
 
 #sidebarCollapse {
@@ -668,17 +670,45 @@ footer .copyright {
 /*===============small-screen overlay sidebar design media queries==============*/
 
 @media only screen and (max-width: 992px) {
+  #sidebar.active {
+    transform: translatex(0);
+  }
   #sidebar {
     position: fixed;
     top: 0;
     bottom: 0;
     z-index: 10;
-    width: 260px;
+    /* width: 260px; */
     transform: translatex(-100%);
     transition: all 150ms linear;
     box-shadow: none !important;
+    width: 80px;
+    height: 100% !important;
+    position: absolute !important;
+    overflow: visible !important;
+    top: 0 !important;
+    z-index: 666;
+    float: left !important;
+    bottom: 0 !important;
   }
-
+  #sidebar ul li a span {
+    display: none;
+    transition: all 0.5s ease;
+  }
+  #sidebar .sidebar-header h3 span {
+    display: none;
+    transition: all 0.5s ease;
+  }
+  /* #content.active {
+    width: calc(100% - 80px);
+  } */
+  #content.active {
+    width: calc(100% - 80px);
+    position: relative;
+    float: right;
+    transition: all 0.3s;
+    background-color: #eeeeee;
+  }
   .body-overlay {
     position: fixed;
     top: 0;

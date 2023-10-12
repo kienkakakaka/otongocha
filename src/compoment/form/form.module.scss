@@ -1,0 +1,26 @@
+.oveplay {
+  // position: absolute;
+  display: flex;
+
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 9990;
+  left: 0;
+  top: 0;
+
+  .oveplayconten {
+    box-sizing: border-box;
+    padding: 30px;
+    margin-top: 200px;
+    width: 80%;
+    margin: auto;
+    height: 80%;
+    color: black;
+    background-color: white;
+    .close {
+      float: right;
+    }
+  }
+}
