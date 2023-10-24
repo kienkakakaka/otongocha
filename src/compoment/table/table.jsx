@@ -2,7 +2,8 @@ import React, { useContext, useState } from "react";
 import { UserContext } from "../../usecontex/usecontex";
 import style from "./table.module.scss";
 import ReactHTMLTableToExcel from "react-html-table-to-excel";
-
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 const Table = () => {
   const username = localStorage.getItem("user");
   const { writeDatabase, arr } = useContext(UserContext);
@@ -63,27 +64,27 @@ const Table = () => {
         <tbody>
           {arr &&
             arr.map((user) => {
-              console.log(user.value.value.data);
+              const titelUsers = user.value.titel && user.value.titel.data;
+              const valueUser = user.value.value && user.value.value.data;
+              if (user.value.value === undefined) return;
               return (
                 <tr>
                   {user.value.titel !== undefined ? (
-                    <td className={style.name}>{user.value.titel.data.name}</td>
+                    <td className={style.name}>{titelUsers.name}</td>
                   ) : (
                     <td className={style.name}>Chưa nhập tên!</td>
                   )}
 
                   {user.value.titel !== undefined ? (
-                    <td className={style.nameclass}>
-                      {user.value.titel.data.typerom}
-                    </td>
+                    <td className={style.nameclass}>{titelUsers.typerom}</td>
                   ) : (
                     <td className={style.nameclass}>phòng</td>
                   )}
-                  {user.value.value.data !== undefined &&
-                    user.value.value.data.find(
+                  {valueUser !== undefined &&
+                    valueUser.find(
                       (user) => user.month === month && user.year === year
                     ) !== undefined &&
-                    user.value.value.data
+                    valueUser
                       .find(
                         (user) => user.month === month && user.year === year
                       )
@@ -116,7 +117,7 @@ const Table = () => {
           type="button"
           onClick={() => handerClickprev()}
           class="btn btn-outline-primary d-flex justify-content-center align-items-center">
-          <span class="material-symbols-outlined">arrow_back_ios</span>
+          <ArrowBackIosIcon />
         </button>
         <button type="button" class="btn btn-outline-primary">
           Tháng {month + 1}
@@ -125,7 +126,7 @@ const Table = () => {
           onClick={() => handerClicknext()}
           type="button"
           class="btn btn-outline-primary  d-flex justify-content-center align-items-center">
-          <span class="material-symbols-outlined">arrow_forward_ios</span>
+          <ArrowForwardIosIcon />
         </button>
       </div>
     </div>

@@ -5,14 +5,17 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { UserProvider } from "./usecontex/usecontex";
 import { BrowserRouter } from "react-router-dom";
+import { MyProvider } from "./usecontex/usecontex1";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <UserProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <MyProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </MyProvider>
     </UserProvider>
   </React.StrictMode>
 );

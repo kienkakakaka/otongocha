@@ -3,7 +3,11 @@ import Select from "react-select";
 import { arrCar } from "./datacar copy";
 import { UserContext } from "../../usecontex/usecontex";
 import style from "./event.module.scss";
+import { useNavigate } from "react-router-dom";
+import { MyContext } from "../../usecontex/usecontex1";
+import Oveplayevent from "./oveplayevent";
 const Event = () => {
+  const history = useNavigate();
   const datauserktv = [
     { value: "kienktv", label: "kienktv" },
     { value: "cuongktv", label: "cuongktv" },
@@ -12,8 +16,19 @@ const Event = () => {
     { value: "hungktv", label: "hungktv" },
     { value: "datktv", label: "datktv" },
   ];
+  const { Messenger } = useContext(MyContext);
+
   const [selectTypeCar, setSelectTypeCar] = useState([]);
-  const { writeDatabase, username, valueCar } = useContext(UserContext);
+  const [searchText1, setSearchText1] = useState("");
+  const {
+    RenderTime,
+    dataItemArr,
+    setDataItemArr,
+    setIdItemCars,
+    listItemsNote,
+    setHinderOverplay,
+  } = useContext(MyContext);
+  const { writeDatabase, setSearchText, valueCar } = useContext(UserContext);
   const [onCar, setOnCar] = useState("");
   const [onTextCar, setOnTextCar] = useState("");
   const [onTime, setOnTime] = useState("");
@@ -21,16 +36,22 @@ const Event = () => {
   const [typeNumber, setTypeNumber] = useState("");
   const [colorCar, setColorCar] = useState("black");
   const [ktvJoin, setKtvJoin] = useState("");
-  const [numberKilometer, setNumberKilometer] = useState(0);
+  const [numberKilometer, setNumberKilometer] = useState("");
   const [typeSuccess, setTypeSuccess] = useState(false);
-  const [numberVin, setNumberVin] = useState(0);
+  const [numberVin, setNumberVin] = useState("");
 
   const [hinderForm, setHinderForm] = useState(false);
   const [hinderEdit, setHinderEdit] = useState(false);
   const [indexEdit, setIndexEdit] = useState(-1);
   const handerClick = (e) => {
-    console.log(valueCar);
     e.preventDefault();
+    if (selectTypeCar === "" || onCar === "") {
+      Messenger("error", "Vui lòng nhập loại xe và tên xe");
+      return;
+    } else if (onTextCar === "") {
+      Messenger("error", "Vui lòng nhập biển số xe");
+      return;
+    }
     if (valueCar === null) {
       writeDatabase(`eventCar`, [
         {
@@ -67,20 +88,25 @@ const Event = () => {
         },
       ]);
     }
+    Messenger("success", "Thêm sự kiện thành công");
     setSelectTypeCar("");
     setOnTimeOut("");
     setOnTime("");
     setOnCar("");
     setOnTextCar("");
     setHinderForm(true);
+    setNumberVin("");
+    setNumberKilometer("");
   };
-  const removeItems = (index) => {
+  const removeItems = (Conten) => {
+    let index = valueCar.findIndex((item) => item.Conten === Conten);
     let arr = [...valueCar];
     arr.splice(index, 1);
 
     writeDatabase(`eventCar`, arr);
   };
-  const editItems = (index) => {
+  const editItems = (Conten) => {
+    let index = valueCar.findIndex((item) => item.Conten === Conten);
     setSelectTypeCar(valueCar[index].TypeCar);
     setOnTimeOut(valueCar[index].timeout);
     setOnTime(valueCar[index].time);
@@ -108,20 +134,9 @@ const Event = () => {
       };
       console.log(data);
       writeDatabase(`eventCar`, data);
-      setSelectTypeCar("");
-      setOnTimeOut("");
-      setOnTime("");
-      setOnCar("");
-      setOnTextCar("");
-      setTypeNumber("");
-      setColorCar("#333");
-      setKtvJoin("");
-      setNumberKilometer("");
-      setHinderForm(true);
-      setIndexEdit(-1);
-      setHinderEdit(false);
     }
   };
+
   return (
     <div className={` container ${style.container}`}>
       <button
@@ -136,10 +151,10 @@ const Event = () => {
           setOnCar("");
           setOnTextCar("");
           setTypeNumber("");
-          setColorCar("#fff");
+
           setKtvJoin("");
           setNumberKilometer("");
-          setHinderForm(true);
+
           setIndexEdit(-1);
           setHinderEdit(false);
         }}>
@@ -206,37 +221,10 @@ const Event = () => {
             class="form-control "
             onChange={(e) => setNumberVin(e.target.value)}
             id="exampleColorInput"
-            value={numberKilometer}
+            value={numberVin}
             title="Choose your color"></input>
         </div>
-        <div className="col-4">
-          <label htmlFor="time" className="form-label">
-            Thời gian vào
-          </label>
-          <input
-            value={onTime}
-            type="time"
-            id="time"
-            className="form-control"
-            onChange={(e) => {
-              setOnTime(e.target.value);
-            }}
-          />
-        </div>
-        <div className="col-4">
-          <label htmlFor="timeout" className="form-label">
-            Thời gian ra
-          </label>
-          <input
-            value={onTimeOut}
-            type="time"
-            className="form-control"
-            id="timeout"
-            onChange={(e) => {
-              setOnTimeOut(e.target.value);
-            }}
-          />
-        </div>
+
         <div className="mb-3 col-3">
           <label for="disabledSelect2" className="form-label">
             Hộp số
@@ -257,25 +245,13 @@ const Event = () => {
           </label>
           <input
             type="color"
+            value={colorCar}
             class="form-control form-control-color"
             onChange={(e) => setColorCar(e.target.value)}
             id="exampleColorInput"
             title="Choose your color"></input>
         </div>
 
-        <div className="mb-3 col-4">
-          <label htmlFor="timeout" className="form-label">
-            KTV tham gia
-          </label>
-          <Select
-            isMulti
-            name="colors"
-            onChange={(option) => setKtvJoin(option)}
-            options={datauserktv}
-            className="basic-multi-select"
-            classNamePrefix="select"
-          />
-        </div>
         <div className="mb-3 col-4">
           <label for="exampleColorInput" class="form-label">
             Số KM
@@ -287,20 +263,6 @@ const Event = () => {
             id="exampleColorInput"
             value={numberKilometer}
             title="Choose your color"></input>
-        </div>
-        <div className="mb-3 col-4 d-flex justify-content-end flex-column">
-          <div class="form-check">
-            <input
-              class="form-check-input"
-              type="radio"
-              onClick={() => setTypeSuccess((pre) => !pre)}
-              name="flexRadioDefault"
-              id="flexRadioDefault1"
-            />
-            <label class="form-check-label vw-100" for="flexRadioDefault1">
-              Đạt
-            </label>
-          </div>
         </div>
 
         <button
@@ -318,8 +280,15 @@ const Event = () => {
           Chỉnh sửa
         </button>
       </form>
-
-      <table className="table table-bordered border-primary">
+      <br></br>
+      <input
+        type="text"
+        className="mb-3"
+        placeholder="Tìm kiếm..."
+        value={searchText1}
+        onChange={(e) => setSearchText1(e.target.value)}
+      />
+      <table className="table table-bordered border-black">
         <thead>
           <tr>
             <th>ID</th>
@@ -330,14 +299,19 @@ const Event = () => {
             <th style={{ whiteSpace: "nowrap" }}>Hộp số</th>
             <th>Màu xe</th>
             <th>Số KM</th>
-            <th>Thời gian vào</th>
-            <th>Thời gian ra</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
           {valueCar !== null &&
             valueCar.length !== 0 &&
-            valueCar.map((data, index) => (
+            (valueCar
+              ? valueCar.filter((data) => {
+                  // console.log(data);
+                  return data.Conten?.includes(searchText1);
+                })
+              : valueCar
+            ).map((data, index) => (
               <tr key={index}>
                 <td>{index + 1}</td>
                 <td>{data.TypeCar}</td>
@@ -351,25 +325,46 @@ const Event = () => {
                   <i class="fa-solid fa-car"></i>
                 </td>
                 <td>{data.numberKilometer}</td>
-                <td>{data.time}</td>
-                <td>{data.timeout}</td>
 
                 <td className="d-flex flex-row">
                   <button
-                    onClick={() => editItems(index)}
+                    onClick={() => {
+                      editItems(data.Conten);
+                      Messenger("info", "Vui lòng chỉnh sửa");
+                    }}
                     className="btn btn-success">
                     Chỉnh sửa
                   </button>
                   <button
-                    onClick={() => removeItems(index)}
+                    onClick={() => {
+                      removeItems(data.Conten);
+                      Messenger("error", "xoá sự kiện thành công");
+                    }}
                     className="btn btn-danger">
                     Xoá
+                  </button>
+                  <button
+                    className="btn btn-warning"
+                    onClick={() => {
+                      setSearchText(data.Conten);
+                      Messenger("success", "Tham chiếu thành công");
+                      history("/form");
+                    }}>
+                    Tham chiếu
+                  </button>
+                  <button
+                    className="btn btn-secondary"
+                    onClick={(e) => {
+                      listItemsNote(e, data.Conten);
+                    }}>
+                    Ghi chú
                   </button>
                 </td>
               </tr>
             ))}
         </tbody>
       </table>
+      <Oveplayevent />
     </div>
   );
 };

@@ -8,11 +8,11 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import GridOnIcon from "@mui/icons-material/GridOn";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import AppsIcon from "@mui/icons-material/Apps";
-
+import PhotoLibraryIcon from "@mui/icons-material/PhotoLibrary";
 import ExtensionIcon from "@mui/icons-material/Extension";
 const Sidebar = () => {
   const username = localStorage.getItem("user");
-
+  const { setSearchText } = useContext(UserContext);
   const { activeSidebar } = useContext(UserContext);
   return (
     <div>
@@ -24,17 +24,15 @@ const Sidebar = () => {
           </h3>
         </div>
         <ul className="list-unstyled components">
-          {username === "admin" && (
-            <li>
-              <Link to="/" className="dashboard">
-                <DashboardIcon />
-                <span>Tổng quan</span>
-              </Link>
-            </li>
-          )}
+          <li>
+            <Link to="/" className="dashboard">
+              <DashboardIcon />
+              <span>Tổng quan</span>
+            </Link>
+          </li>
 
           {username === "admin" && (
-            <li className="dropdown">
+            <li onClick={() => setSearchText("")} className="dropdown">
               <Link to="/events" data-toggle="collapse" aria-expanded="false">
                 <AspectRatioIcon />
                 <span>Sự kiện</span>
@@ -56,14 +54,14 @@ const Sidebar = () => {
             </li>
           )}
           {username === "admin" && (
-            <li className="dropdown">
+            <li onClick={() => setSearchText("")} className="dropdown">
               <Link
-                to="/form"
+                to="/kpi"
                 href="#pageSubmenu2"
                 data-toggle="collapse"
                 aria-expanded="false">
                 <AppsIcon />
-                <span>Đơn hàng </span>
+                <span>KPI chỉ tiêu</span>
               </Link>
             </li>
           )}
@@ -94,6 +92,12 @@ const Sidebar = () => {
             <Link to="/myself" data-toggle="collapse" aria-expanded="false">
               <ContentCopyIcon />
               <span>Cá nhân</span>
+            </Link>
+          </li>
+          <li className="dropdown">
+            <Link to="/library" data-toggle="collapse" aria-expanded="false">
+              <PhotoLibraryIcon />
+              <span>Thư viện</span>
             </Link>
           </li>
         </ul>

@@ -1,8 +1,14 @@
 import React, { useContext, useRef, useState } from "react";
+import { Card, Col, Row } from "antd";
 import Select from "react-select";
 import style from "./Manage.module.scss";
 import { UserContext } from "../../usecontex/usecontex";
 import { useClickAway } from "@uidotdev/usehooks";
+import Sigup from "../auth/createAcc";
+import Manageoffday from "./manageoffday";
+import { MyContext } from "../../usecontex/usecontex1";
+import ManageScores from "./manageScores";
+import TableManagaScores from "./tableManagaScores";
 const Manage = () => {
   const datauserktv = [
     { value: "kienktv", label: "kienktv" },
@@ -12,201 +18,123 @@ const Manage = () => {
     { value: "hungktv", label: "hungktv" },
     { value: "datktv", label: "datktv" },
   ];
-  const { writeDatabase, username, valueCar } = useContext(UserContext);
-
-  const [onCar, setOnCar] = useState("");
-  const [onTextCar, setOnTextCar] = useState("");
-  const [onTime, setOnTime] = useState("");
-  const [onTimeOut, setOnTimeOut] = useState("");
-  const [typeNumber, setTypeNumber] = useState("");
-  const [colorCar, setColorCar] = useState("#333");
-  const [ktvJoin, setKtvJoin] = useState("");
-  const [numberKilometer, setNumberKilometer] = useState(0);
-  const [typeSuccess, setTypeSuccess] = useState(false);
-  const [numberVin, setNumberVin] = useState();
-  const [closeOver, setCloseOver] = useState(false);
-  const [dataOverplay, setDataOverPlay] = useState();
-  const handerClick = (data) => {
-    console.log(data.Car);
-    setDataOverPlay(data);
-    setCloseOver(true);
-  };
-  const cloaseOverplay = () => {
-    setCloseOver(false);
-  };
-  const overplayRef = useRef(null);
-  const removeOver = (event) => {
-    if (overplayRef.current && !overplayRef.current.contains(event.target)) {
-      setCloseOver(false);
-    }
-  };
-  // const ref = useClickAway(() => cloaseOverplay());
+  const [hindertable1, setHindertable1] = useState(false);
+  const [hindertable2, setHindertable2] = useState(false);
+  const { arr } = useContext(UserContext);
+  const { result } = useContext(MyContext);
+  const [adduser, setAddUser] = useState(false);
   return (
     <div className={`container ${style.container}`}>
-      <h1 className="btn btn-primary">Quản lý nhân viên</h1>
-      <h1 className="btn btn-primary">Quản lý đơn hàng</h1>
-      <h1 className="btn btn-primary">Quản lý đơn đơn nghỉ</h1>
-      <table
-        style={{ display: "none" }}
-        className="table table-bordered border-black">
-        <thead>
-          <tr>
-            {" "}
-            <th>ID</th>
-            <th>Họ và tên</th>
-            <th>Phòng</th>
-            <th>Chức vụ</th>
-            <th>Địa chỉ</th>
-            <th>SDT</th>
-            <th>Hàng động</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td>Phan Hữu Kiên</td>
-            <td>Kỹ Thuật</td>
-            <td>Nhân viên</td>
-            <td>Hà Tĩnh</td>
-            <td>0982090524</td>
-            <td>
-              <button className="btn btn-primary ml-3">Chỉnh sửa</button>
-              <button className="btn btn-primary ml-3">Chấm điểm</button>
-              <button className="btn btn-primary ml-3">Xem HĐ</button>
-            </td>
-          </tr>{" "}
-          <tr>
-            <td>2</td>
-            <td>Phan Hữu Kiên</td>
-            <td>Kỹ Thuật</td>
-            <td>Nhân viên</td>
-            <td>Hà Tĩnh</td>
-            <td>0982090524</td>
-            <td>
-              <button className="btn btn-primary ml-3">Chỉnh sửa</button>
-              <button className="btn btn-primary ml-3">Chấm điểm</button>
-              <button className="btn btn-primary ml-3">Xem HĐ</button>
-            </td>
-          </tr>{" "}
-          <tr>
-            <td>3</td>
-            <td>Phan Hữu Kiên</td>
-            <td>Kỹ Thuật</td>
-            <td>Nhân viên</td>
-            <td>Hà Tĩnh</td>
-            <td>0982090524</td>
-            <td>
-              <button className="btn btn-primary ml-3">Chỉnh sửa</button>
-              <button className="btn btn-primary ml-3">Chấm điểm</button>
-              <button className="btn btn-primary ml-3">Xem HĐ</button>
-            </td>
-          </tr>{" "}
-          <tr>
-            <td>4</td>
-            <td>Phan Hữu Kiên</td>
-            <td>Kỹ Thuật</td>
-            <td>Nhân viên</td>
-            <td>Hà Tĩnh</td>
-            <td>0982090524</td>
-            <td>
-              <button className="btn btn-primary ml-3">Chỉnh sửa</button>
-              <button className="btn btn-primary ml-3">Chấm điểm</button>
-              <button className="btn btn-primary ml-3">Xem HĐ</button>
-            </td>
-          </tr>{" "}
-          <tr>
-            <td>5</td>
-            <td>Phan Hữu Kiên</td>
-            <td>Kỹ Thuật</td>
-            <td>Nhân viên</td>
-            <td>Hà Tĩnh</td>
-            <td>0982090524</td>
-            <td>
-              <button className="btn btn-primary ml-3">Chỉnh sửa</button>
-              <button className="btn btn-primary ml-3">Chấm điểm</button>
-              <button className="btn btn-primary ml-3">Xem HĐ</button>
-            </td>
-          </tr>{" "}
-          <tr>
-            <td>6</td>
-            <td>Phan Hữu Kiên</td>
-            <td>Kỹ Thuật</td>
-            <td>Nhân viên</td>
-            <td>Hà Tĩnh</td>
-            <td>0982090524</td>
-            <td>
-              <button className="btn btn-primary ml-3">Chỉnh sửa</button>
-              <button className="btn btn-primary ml-3">Chấm điểm</button>
-              <button className="btn btn-primary ml-3">Xem HĐ</button>
-            </td>
-          </tr>{" "}
-          <tr>
-            <td>7</td>
-            <td>Phan Hữu Kiên</td>
-            <td>Kỹ Thuật</td>
-            <td>Nhân viên</td>
-            <td>Hà Tĩnh</td>
-            <td>0982090524</td>
-            <td>
-              <button className="btn btn-primary ml-3">Chỉnh sửa</button>
-              <button className="btn btn-primary ml-3">Chấm điểm</button>
-              <button className="btn btn-primary ml-3">Xem HĐ</button>
-            </td>
-          </tr>{" "}
-          <tr>
-            <td>9</td>
-            <td>Phan Hữu Kiên</td>
-            <td>Kỹ Thuật</td>
-            <td>Nhân viên</td>
-            <td>Hà Tĩnh</td>
-            <td>0982090524</td>
-            <td>
-              <button className="btn btn-primary ml-3">Chỉnh sửa</button>
-              <button className="btn btn-primary ml-3">Chấm điểm</button>
-              <button className="btn btn-primary ml-3">Xem HĐ</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <table className="table table-hover">
-        <thead className="text-primary">
-          <tr>
-            <th>ID</th>
-            <th>Xe</th>
-            <th>Biển số</th>
-            <th>Thời gian vào</th>
-            <th>Thời gian ra</th>
-          </tr>
-        </thead>
-        <tbody>
-          {valueCar !== null &&
-            valueCar.length !== 0 &&
-            valueCar.map((data, index) => (
-              <tr onClick={() => handerClick(data)}>
-                <td>{index + 1}</td>
-                <td>
-                  {data.TypeCar}-{data.Car}
-                </td>
-                <td>{data.Conten}</td>
-              </tr>
-            ))}
-        </tbody>
-      </table>
-      {closeOver && (
-        <div
-          onClick={(event) => removeOver(event)}
-          ref={overplayRef}
-          className={style.oveplay}>
-          <div className={style.oveplayconten}>
-            <span onClick={() => cloaseOverplay(false)} className={style.close}>
-              X
-            </span>
-            <label htmlFor="">Tên khách hàng</label>
-            <label htmlFor="">Tên xe {dataOverplay.Car}</label>
-            <label htmlFor="">Tên Biển số xe</label>
+      {" "}
+      <Row gutter={16}>
+        <Col span={8}>
+          <Card title="Quan lý nhân sự" bordered={false}>
+            <div className="d-flex justify-content-between">
+              <h3>{arr.length - 1} Nhân viên</h3>{" "}
+              <button
+                className="btn btn-primary"
+                onClick={() => {
+                  setHindertable1((pre) => !pre);
+                  setHindertable2(false);
+                  setAddUser(false);
+                }}>
+                Xem
+              </button>
+            </div>
+          </Card>
+        </Col>{" "}
+        <Col span={8}>
+          <Card title="Quản lý chấm điểm" bordered={false}>
+            <div className="d-flex justify-content-between">
+              <h3>{result} Phiếu điểm</h3>{" "}
+              <button
+                className="btn btn-primary"
+                // onClick={() => {
+                //   setHindertable2((pre) => !pre);
+                //   setHindertable1(false);
+                //   setAddUser(false);
+                // }}
+              >
+                Chấm điểm
+              </button>
+            </div>
+          </Card>
+        </Col>
+        <Col span={8}>
+          <Card title="Quản lý ngày nghỉ" bordered={false}>
+            <div className="d-flex justify-content-between">
+              <h3>{result} Đơn</h3>{" "}
+              <button
+                className="btn btn-primary"
+                onClick={() => {
+                  setHindertable2((pre) => !pre);
+                  setHindertable1(false);
+                  setAddUser(false);
+                }}>
+                Duyệt đơn
+              </button>
+            </div>
+          </Card>
+        </Col>
+      </Row>
+      <div>
+        {hindertable1 && (
+          <div>
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                setAddUser((pre) => !pre);
+                setHindertable2(false);
+              }}>
+              +
+            </button>{" "}
+            {adduser && <Sigup />}
+            <table className="table table-bordered border-black">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Họ và tên</th>
+                  <th>Phòng</th>
+                  <th>Chức vụ</th>
+                  <th>Địa chỉ</th>
+                  <th>SDT</th>
+                  <th>Hàng động</th>
+                </tr>
+              </thead>
+              <tbody>
+                {arr &&
+                  arr.map((user, index) => {
+                    const itemuser = user.value.titel && user.value.titel.data;
+                    if (user.value.titel === undefined) {
+                      return;
+                    }
+
+                    return (
+                      <tr>
+                        <td>{index}</td>
+                        <td>{itemuser && itemuser.name}</td>
+                        <td>{itemuser && itemuser.typerom}</td>
+                        <td>{itemuser && itemuser.position}</td>
+                        <td>{itemuser && itemuser.address}</td>
+                        <td>{itemuser && itemuser.sdt}</td>
+                        <td>
+                          <button className="btn btn-primary ml-3">
+                            Chỉnh sửa
+                          </button>
+                          <button className="btn btn-primary ml-3">
+                            Chấm điểm
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
           </div>
-        </div>
-      )}
+        )}
+        {hindertable2 && <Manageoffday />}
+        <TableManagaScores />
+      </div>
     </div>
   );
 };

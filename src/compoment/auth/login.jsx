@@ -23,7 +23,7 @@ function Logins() {
         const user = userCredential.user;
 
         localStorage.setItem("user", user.email.split("@")[0]);
-        history("/");
+        history("/calendar");
         window.location.reload();
       })
       .catch((error) => {

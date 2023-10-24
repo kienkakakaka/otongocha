@@ -14,6 +14,8 @@ import Table2s from "../layout/table2/table2s";
 import Myselfs from "../layout/myselfs/Myselfs";
 import Manages from "../layout/manage/Manages";
 import PritaverouterAdmin from "./Pritaverouter admin";
+import Library from "../compoment/library/library";
+import Librarys from "../layout/librarys/Library";
 
 const Approuters = () => {
   return (
@@ -22,12 +24,13 @@ const Approuters = () => {
         <Route
           path="/"
           element={
-            <PritaverouterAdmin>
-              <Dashboard />
-            </PritaverouterAdmin>
+            <Pritaverouter>
+              <Forms />
+            </Pritaverouter>
           }
         />
         <Route path="/login" element={<Logins />} />
+        <Route path="/library" element={<Librarys />} />
         <Route
           path="/events"
           element={
@@ -69,10 +72,10 @@ const Approuters = () => {
           }
         />
         <Route
-          path="/form"
+          path="/kpi"
           element={
             <PritaverouterAdmin>
-              <Forms />
+              <Dashboard />
             </PritaverouterAdmin>
           }
         />

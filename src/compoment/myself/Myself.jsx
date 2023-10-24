@@ -5,20 +5,23 @@ import style from "./myself.module.scss";
 import Chart5 from "../chart/chart5";
 import { UserContext } from "../../usecontex/usecontex";
 import Select from "react-select";
+import { MyContext } from "../../usecontex/usecontex1";
+import Scores from "./scores";
 
 const username = localStorage.getItem("user");
 const Myself = () => {
   const [hinderEdit, setHinderEdit] = useState(true);
-
+  const [searchText, setSearchText] = useState("");
+  const { RenderTime } = useContext(MyContext);
   const [hinderTable, setHindertable] = useState(false);
   const [hinderTable2, setHinderTable2] = useState(false);
   const [myuser, setmyUser] = useState([]);
   const [myuserIndex, setmyUserIndex] = useState();
-  console.log(myuser);
+
   const { readDatabase, writeDatabase } = useContext(UserContext);
   const [hinderForm, setHinderForm] = useState(false);
   const [dataItem, setDataItem] = useState([]);
-  console.log(dataItem);
+  // console.log(dataItem);
   const [dataItemArr, setDataItemArr] = useState([]);
   const datauserktv = [
     { value: "kienktv", label: "kienktv" },
@@ -38,22 +41,18 @@ const Myself = () => {
     setHinderTable2(true);
   };
   const user = datauserktv.map((user) => user.value);
-
   useEffect(() => {
-    user.map((user) => {
-      const results =
-        dataItemArr &&
-        dataItemArr.filter((data) => {
-          return data.list_items.some((item) => {
-            return item.ktv && item.ktv.some((ktv) => ktv.value === user);
-          });
+    const results =
+      dataItemArr &&
+      dataItemArr.filter((data) => {
+        return data.list_items.some((item) => {
+          return item.ktv && item.ktv.some((ktv) => ktv.value === username);
         });
-      writeDatabase(`data_items/${user}`, results);
-      console.log(results);
-    });
-
-    // setmyUser(results);
+      });
+    setmyUser(results);
+    // console.log(results);
   }, [dataItemArr]);
+
   useEffect(() => {
     readDatabase(`data_items_car/data`, setDataItemArr);
   }, []);
@@ -65,16 +64,19 @@ const Myself = () => {
         if (item.code == codeItem) {
           item.list_items[indexcodeItem].text =
             item.list_items[indexcodeItem].text === undefined
-              ? `${username}:${changeInput}  `
-              : item.list_items[indexcodeItem].text +
-                `${username}:${changeInput}  `;
+              ? [`${username}:${changeInput}  `]
+              : [
+                  ...item.list_items[indexcodeItem].text,
+                  `${username}:${changeInput}  `,
+                ];
+
           return item;
         } else return item;
       });
       writeDatabase(`data_items_car`, updateDataItems);
     }
     setchangeInput("");
-    console.log(myuser);
+
     setDataItem(myuser[myuserIndex]);
   };
   const data = [
@@ -175,11 +177,6 @@ const Myself = () => {
       value: 3.2,
     },
   ];
-
-  useEffect(() => {
-    readDatabase(`data_items/${username}/data`, setmyUser);
-  }, []);
-
   return (
     <>
       <div className={`container ${style.container}`}>
@@ -234,224 +231,7 @@ const Myself = () => {
           </div>
         </div>
 
-        {hinderTable && (
-          <div>
-            <table className="table table-bordered border-black">
-              <thead>
-                <tr>
-                  <th className="fw-bold">TT</th>
-                  <th className="fw-bold">Tiêu chí</th>
-                  <th className="fw-bold">Hệ số</th>
-                  <th className="fw-bold">Nhân viên chấm điểm</th>
-                  <th className="fw-bold">Quản lý chấm điểm</th>
-                  <th className="fw-bold">Giám đốc chấm điểm</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td className="fw-bold">1</td>
-                  <td className="fw-bold">Năng suất làm việc</td>
-                  <td style={{ textAlign: "center" }}>60</td>
-                  <td style={{ textAlign: "center" }}>
-                    <input className="w-25" type="number" />
-                  </td>
-                  <td style={{ textAlign: "center" }}>
-                    <input className="w-25" type="number" />
-                  </td>
-                  <td style={{ textAlign: "center" }}>
-                    <input className="w-25" type="number" />
-                  </td>
-                </tr>
-                <tr>
-                  <td className="fw-bold">2</td>
-                  <td className="fw-bold">Chất lượng chuyên môn</td>
-                  <td style={{ textAlign: "center" }}>60</td>
-                  <td style={{ textAlign: "center" }}>
-                    <input className="w-25" type="number" />
-                  </td>
-                  <td style={{ textAlign: "center" }}>
-                    <input className="w-25" type="number" />
-                  </td>
-                  <td style={{ textAlign: "center" }}>
-                    <input className="w-25" type="number" />
-                  </td>
-                </tr>
-                <tr>
-                  <td className="fw-bold">3</td>
-                  <td className="fw-bold">
-                    Đào tạo nhân viên hỗ trợ đồng nghiệp
-                  </td>
-                  <td style={{ textAlign: "center" }}>40</td>
-                  <td style={{ textAlign: "center" }}>
-                    <input className="w-25" type="number" />
-                  </td>
-                  <td style={{ textAlign: "center" }}>
-                    <input className="w-25" type="number" />
-                  </td>
-                  <td style={{ textAlign: "center" }}>
-                    <input className="w-25" type="number" />
-                  </td>
-                </tr>
-                <tr>
-                  <td className="fw-bold">4</td>
-                  <td className="fw-bold">Làm việc nhóm</td>
-                  <td style={{ textAlign: "center" }}>20</td>
-                  <td style={{ textAlign: "center" }}>
-                    <input className="w-25" type="number" />
-                  </td>
-                  <td style={{ textAlign: "center" }}>
-                    <input className="w-25" type="number" />
-                  </td>
-                  <td style={{ textAlign: "center" }}>
-                    <input className="w-25" type="number" />
-                  </td>
-                </tr>
-                <tr>
-                  <td className="fw-bold">5</td>
-                  <td className="fw-bold">Tuân thủ nội quy</td>
-                  <td style={{ textAlign: "center" }}>20</td>
-                  <td style={{ textAlign: "center" }}>
-                    <input className="w-25" type="number" />
-                  </td>
-                  <td style={{ textAlign: "center" }}>
-                    <input className="w-25" type="number" />
-                  </td>
-                  <td style={{ textAlign: "center" }}>
-                    <input className="w-25" type="number" />
-                  </td>
-                </tr>
-                <tr>
-                  <td className="fw-bold">6</td>
-                  <td className="fw-bold">
-                    Văn hoá ứng xử với KH, đồng nghiệp
-                  </td>
-                  <td style={{ textAlign: "center" }}>20</td>
-                  <td style={{ textAlign: "center" }}>
-                    <input className="w-25" type="number" />
-                  </td>
-                  <td style={{ textAlign: "center" }}>
-                    <input className="w-25" type="number" />
-                  </td>
-                  <td style={{ textAlign: "center" }}>
-                    <input className="w-25" type="number" />
-                  </td>
-                </tr>
-                <tr>
-                  <td className="fw-bold">7</td>
-                  <td className="fw-bold">Tính tự giác,chủ động công việc</td>
-                  <td style={{ textAlign: "center" }}>20</td>
-                  <td style={{ textAlign: "center" }}>
-                    <input className="w-25" type="number" />
-                  </td>
-                  <td style={{ textAlign: "center" }}>
-                    <input className="w-25" type="number" />
-                  </td>
-                  <td style={{ textAlign: "center" }}>
-                    <input className="w-25" type="number" />
-                  </td>
-                </tr>
-                <tr>
-                  <td className="fw-bold">8</td>
-                  <td className="fw-bold">
-                    Ý kiến sáng tạo cải tiến công việc
-                  </td>
-                  <td style={{ textAlign: "center" }}>20</td>
-                  <td style={{ textAlign: "center" }}>
-                    <input className="w-25" type="number" />
-                  </td>
-                  <td style={{ textAlign: "center" }}>
-                    <input className="w-25" type="number" />
-                  </td>
-                  <td style={{ textAlign: "center" }}>
-                    <input className="w-25" type="number" />
-                  </td>
-                </tr>
-                <tr>
-                  <td className="fw-bold">9</td>
-                  <td className="fw-bold">Học tập nâng cao chuyên môn</td>
-                  <td style={{ textAlign: "center" }}>20</td>
-                  <td style={{ textAlign: "center" }}>
-                    <input className="w-25" type="number" />
-                  </td>
-                  <td style={{ textAlign: "center" }}>
-                    <input className="w-25" type="number" />
-                  </td>
-                  <td style={{ textAlign: "center" }}>
-                    <input className="w-25" type="number" />
-                  </td>
-                </tr>
-                <tr>
-                  <td className="fw-bold">10</td>
-                  <td className="fw-bold">Thực hành 5s Kaizen</td>
-                  <td style={{ textAlign: "center" }}>20</td>
-                  <td style={{ textAlign: "center" }}>
-                    <input className="w-25" type="number" />
-                  </td>
-                  <td style={{ textAlign: "center" }}>
-                    <input className="w-25" type="number" />
-                  </td>
-                  <td style={{ textAlign: "center" }}>
-                    <input className="w-25" type="number" />
-                  </td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td className="fw-bold">Tổng điểm</td>
-                  <td className="fw-bold" style={{ textAlign: "center" }}>
-                    300
-                  </td>
-                  <td className="fw-bold" style={{ textAlign: "center" }}>
-                    ...
-                  </td>
-                  <td className="fw-bold" style={{ textAlign: "center" }}>
-                    ...
-                  </td>
-                  <td className="fw-bold" style={{ textAlign: "center" }}>
-                    ...
-                  </td>
-                  <td className="fw-bold" style={{ textAlign: "center" }}></td>
-                </tr>
-              </tbody>
-            </table>
-            <div class="mb-3">
-              <label
-                className="fw-bold"
-                for="exampleFormControlTextarea1"
-                class="form-label">
-                Góp ý, đề xuất
-              </label>
-              <textarea
-                class="form-control"
-                id="exampleFormControlTextarea1"
-                rows="3"></textarea>
-            </div>
-            <div class="mb-3">
-              <label
-                className="fw-bold"
-                for="exampleFormControlTextarea1"
-                class="form-label">
-                Nhận xét của quản lý
-              </label>
-              <textarea
-                class="form-control"
-                id="exampleFormControlTextarea1"
-                rows="3"></textarea>
-            </div>
-            <div class="mb-3">
-              <label
-                className="fw-bold"
-                for="exampleFormControlTextarea1"
-                class="form-label">
-                Nhận xét của giám đốc
-              </label>
-              <textarea
-                class="form-control"
-                id="exampleFormControlTextarea1"
-                rows="3"></textarea>
-            </div>
-            <button className="btn btn-primary mb-3 mt-3">Cập nhật</button>
-          </div>
-        )}
+        <Scores hinderTable={hinderTable} setHindertable={setHindertable} />
         {hinderForm && (
           <div class="mb-3">
             <label for="exampleFormControlTextarea1" class="form-label">
@@ -466,18 +246,36 @@ const Myself = () => {
         )}
         <div className={style.itemconten}>
           <h1>Công việc hôm nay</h1>
+          <input
+            type="text"
+            placeholder="Tìm kiếm..."
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+          />
           <table className="table table-hover">
             <thead className="text-primary">
               <tr>
                 <th>Mã đơn</th>
                 <th>Khách hàng</th>
-                <th>SDT</th>
+                {username === " admin" && <th>SDT</th>}
                 <th>Thời gian tạo</th>
               </tr>
             </thead>
             <tbody>
               {myuser &&
-                myuser.map((data, index) => (
+                myuser.length !== 0 &&
+                (searchText
+                  ? myuser.filter((data) => {
+                      return (
+                        (data.code && data.code.includes(searchText)) ||
+                        (data.name && data.name.includes(searchText)) ||
+                        (data.phone_number &&
+                          data.phone_number.includes(searchText)) ||
+                        (data.id && data.id.includes(searchText))
+                      );
+                    })
+                  : myuser
+                ).map((data, index) => (
                   <tr
                     onClick={() => {
                       handerClick(index);
@@ -485,8 +283,8 @@ const Myself = () => {
                     }}>
                     <td>{data.code}</td>
                     <td>{data.name}</td>
-                    <td>{data.phone_number}</td>
-                    <td>{data.created_on}</td>
+                    {username === " admin" && <td>{data.phone_number}</td>}
+                    <td>{RenderTime(data.created_on)}</td>
                   </tr>
                 ))}
             </tbody>
@@ -508,7 +306,7 @@ const Myself = () => {
                 <h1>Mã đơn: {dataItem.code}</h1>
                 <p>Tên khách hàng: {dataItem.name}</p>
                 {dataItem.district && <p>Địa chỉ {dataItem.district}</p>}
-                <p>SDT: {dataItem.phone_number}</p>
+                {username === " admin" && <p>SDT: {dataItem.phone_number}</p>}
               </div>
 
               <table className=" table table-bordered border-black">
@@ -516,8 +314,8 @@ const Myself = () => {
                   <tr>
                     <th>STT</th>
                     <th>Tên sản phẩm</th>
-                    <th>Giá</th>
-                    <th>Số lượng</th>
+                    {/* <th>Giá</th>
+                    <th>Số lượng</th> */}
                     <th>Tag</th>
                     <th>KTV</th>
                     <th>Ghi chú</th>
@@ -535,16 +333,19 @@ const Myself = () => {
                       >
                         <td>{index + 1}</td>
                         <td>{dataItem.name_item}</td>
-                        <td>{dataItem.price}</td>
+                        {/* <td>{dataItem.price}</td>
                         <td>
                           {dataItem.quantity} {dataItem.unit}
-                        </td>
+                        </td> */}
                         <td>{dataItem.tag || ""}</td>
                         <td>
                           {dataItem.ktv &&
                             dataItem.ktv.map((user) => user.value)}
                         </td>
-                        <td>{dataItem.text}</td>
+                        <td>
+                          {dataItem.text &&
+                            dataItem.text.map((item) => <li>{item}</li>)}
+                        </td>
 
                         <td>
                           <input

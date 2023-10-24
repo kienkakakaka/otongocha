@@ -3,12 +3,18 @@ import data from "../../data/data1.json";
 import { db } from "../../config";
 import { UserContext } from "../../usecontex/usecontex";
 import Select from "react-select";
-
+import { Pagination } from "antd";
 import style from "./form.module.scss";
+import { MyContext } from "../../usecontex/usecontex1";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 const dataEdit = data.orders.map((data) => ({
   code: data.code,
   phone_number: data.customer_data.phone_number,
   name: data.customer_data.name,
+  id: data.customer_data.name.match(/\d+[A-Z]-\d+\.\d+/)
+    ? data.customer_data.name.match(/\d+[A-Z]-\d+\.\d+/)[0]
+    : null,
   created_on: data.created_on,
   district: data.customer_data.addresses[0].district,
   list_items: data.order_line_items.map((data) => ({
@@ -29,9 +35,12 @@ const Form = () => {
     setIndexArr,
     indexItem,
     setIndexItem,
+    searchText,
+    setSearchText,
   } = useContext(UserContext);
-  const [dataItemArr, setDataItemArr] = useState([]);
+  const { RenderTime, dataItemArr, setDataItemArr } = useContext(MyContext);
 
+  const { Messenger } = useContext(MyContext);
   const datauserktv = [
     { value: "kienktv", label: "kienktv" },
     { value: "cuongktv", label: "cuongktv" },
@@ -40,51 +49,116 @@ const Form = () => {
     { value: "hungktv", label: "hungktv" },
     { value: "datktv", label: "datktv" },
   ];
-  const username = datauserktv.map((user) => user.value);
 
+  const username1 = localStorage.getItem("user");
+  const [changeInput, setchangeInput] = useState("");
+  const [indexcodeItem, setIndexCodeItem] = useState("");
   const [hinderTable, setHinderTable] = useState(false);
   const [ktvJoin, setKtvJoin] = useState("");
-
-  console.log(indexItem);
+  const [opentext, setOpentex] = useState(false);
   const [hinderEdit, setHinderEdit] = useState(true);
   const [save, setSave] = useState(false);
   const [dataItem, setDataItem] = useState([]);
-  useEffect(() => {
-    readDatabase(`data_items_car/data`, setDataItemArr);
-  }, []);
-
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
   if (dataItemArr === null) {
     writeDatabase(`data_items_car`, dataEdit);
-  } else console.log(dataItemArr);
-  const handerClick = (index) => {
+  }
+  const handerClick = (code) => {
+    let index = dataItemArr.findIndex((item) => item.code === code);
     setIndexArr(index);
     setDataItem(dataItemArr[index]);
     setHinderTable(true);
   };
-  const editItems = () => {
-    // console.log(dataItemArr[indexArr].list_items[index]);
+  const handerSelect = (option) => {
+    setKtvJoin(option);
     const data_edit_arr = [...dataItemArr];
-    data_edit_arr[indexArr].list_items[indexItem].ktv = ktvJoin;
+    data_edit_arr[indexArr].list_items[indexItem].ktv = option;
     writeDatabase(`data_items_car`, data_edit_arr);
   };
-  useEffect(() => {
-    username.map((user) => {
-      const results =
-        dataItemArr &&
-        dataItemArr.filter((data) => {
-          return data.list_items.some((item) => {
-            return item.ktv && item.ktv.some((ktv) => ktv.value === user);
-          });
-        });
-      writeDatabase(`data_items/${user}`, results);
-    });
 
-    // setmyUser(results);
-  }, [dataItemArr]);
+  const handleDateChange = (data) => {
+    Messenger("success", "Thành Công");
+    const date = new Date(data);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1; // Tháng bắt đầu từ 0, nên cần cộng thêm 1
+    const day = date.getDate();
+    setSearchText(`${day}/${month}/${year}`);
+    setShowDatePicker(false); // Ẩn bảng ngày sau khi chọn
+  };
 
+  const editItems = () => {
+    const data_edit_arr = [...dataItemArr];
+    const dataid = data_edit_arr[indexArr].list_items[indexItem];
+    const newText = `${username1}:${changeInput}`;
+    dataid.ktv = ktvJoin;
+    if (changeInput.trim() !== "") {
+      if (dataid.text === undefined) {
+        dataid.text = [newText];
+      } else dataid.text = [...dataid.text, newText];
+    }
+
+    setOpentex(false);
+    writeDatabase(`data_items_car`, data_edit_arr);
+  };
+  const data_item_render =
+    dataItemArr && searchText
+      ? dataItemArr.filter((data) => {
+          return (
+            (data.code && data.code.includes(searchText)) ||
+            (data.name && data.name.includes(searchText)) ||
+            (data.phone_number && data.phone_number.includes(searchText)) ||
+            (data.id && data.id.includes(searchText)) ||
+            (RenderTime(data.created_on) &&
+              RenderTime(data.created_on).includes(searchText))
+          );
+        })
+      : dataItemArr;
+
+  const totalItems = data_item_render.length;
+  //   const pageNumber = 1;
+  const getPageData = (pageNumber) => {
+    const startIndex = (pageNumber - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    let pageData;
+    if (totalItems !== 0) {
+      pageData = data_item_render.slice(startIndex, endIndex);
+
+      return pageData;
+    }
+  };
+  const onShowSizeChange = (current, pageSize) => {
+    setPageSize(pageSize);
+  };
+  const handlePageChange = (pageNumber) => {
+    setPage(pageNumber);
+  };
   return (
     <>
       <div className="container-fluid">
+        <div
+          className="mb-3 d-flex justify-content-between"
+          style={{ position: "relative" }}>
+          <input
+            type="text"
+            style={{ width: "500px" }}
+            placeholder="Tìm kiếm mã đơn,tên khách hàn, sdt,ngày tạo,biển số..."
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+          />
+          <button
+            className="btn btn-success"
+            onClick={() => setShowDatePicker((pre) => !pre)}>
+            Tìm theo ngày
+          </button>
+          <div style={{ position: "absolute", right: "0", top: "40px" }}>
+            {showDatePicker && (
+              <DatePicker inline onChange={handleDateChange} />
+            )}
+          </div>
+        </div>
         <table className=" table table-bordered border-black">
           <thead>
             <tr>
@@ -95,20 +169,20 @@ const Form = () => {
             </tr>
           </thead>
           <tbody>
-            {dataItemArr &&
-              dataItemArr.map((data, index) => (
-                <tr onClick={() => handerClick(index)}>
+            {getPageData(page) &&
+              getPageData(page).map((data, index) => (
+                <tr onClick={() => handerClick(data.code)}>
                   <td>{data.code}</td>
-                  <td>{data.name}</td>
+                  <td style={{ maxWidth: "500px" }}>{data.name}</td>
                   <td>{data.phone_number}</td>
-                  <td>{data.created_on}</td>
+                  <td>{RenderTime(data.created_on)}</td>
                 </tr>
               ))}
           </tbody>
         </table>
       </div>
       <div>
-        {hinderTable && dataItem && (
+        {hinderTable && dataItemArr[indexArr] && (
           <div className={style.oveplay}>
             <div style={{ overflow: "auto" }} className={style.oveplayconten}>
               <button
@@ -119,10 +193,16 @@ const Form = () => {
               </button>
 
               <div>
-                <h1>Mã đơn: {dataItem.code}</h1>
-                <p>Tên khách hàng: {dataItem.name}</p>
-                {dataItem.district && <p>Địa chỉ {dataItem.district}</p>}
-                <p>SDT: {dataItem.phone_number}</p>
+                <h1>Mã đơn: {dataItemArr[indexArr].code}</h1>
+                <p>Tên khách hàng: {dataItemArr[indexArr].name}</p>
+                <p>
+                  {dataItemArr[indexArr].name.match(/\d+[A-Z]-\d+\.\d+/) &&
+                    dataItemArr[indexArr].name.match(/\d+[A-Z]-\d+\.\d+/)[0]}
+                </p>
+                {dataItemArr[indexArr].district && (
+                  <p>Địa chỉ {dataItemArr[indexArr].district}</p>
+                )}
+                <p>SDT: {dataItemArr[indexArr].phone_number}</p>
               </div>
 
               <table className=" table table-bordered border-black">
@@ -139,47 +219,68 @@ const Form = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {dataItem.list_items.map((dataItem, index) => (
-                    <tr
-                      onClick={() => {
-                        setIndexItem(index);
-                      }}>
-                      <td>{index + 1}</td>
-                      <td>{dataItem.name_item}</td>
-                      <td>{dataItem.price}</td>
-                      <td>
-                        {dataItem.quantity} {dataItem.unit}
-                      </td>
-                      <td>{dataItem.tag || ""}</td>
-                      {hinderEdit && (
+                  {dataItemArr[indexArr].list_items &&
+                    dataItemArr[indexArr].list_items.map((item, index) => (
+                      <tr
+                        onClick={() => {
+                          setIndexItem(index);
+                        }}>
+                        <td>{index + 1}</td>
+                        <td>{item.name_item}</td>
+                        <td>{item.price}</td>
                         <td>
-                          <Select
-                            isMulti
-                            value={dataItem.ktv}
-                            name="colors"
-                            onChange={(option) => setKtvJoin(option)}
-                            options={datauserktv}
-                            className="basic-multi-select"
-                            classNamePrefix="select"
-                          />
+                          {item.quantity} {item.unit}
                         </td>
-                      )}
-                      <td>{dataItem.text}</td>
-                      <td>
-                        <button
-                          onClick={() => {
-                            editItems(index);
-                          }}>
-                          Lưu
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                        <td>{item.tag || ""}</td>
+                        {hinderEdit && (
+                          <td>
+                            <Select
+                              isMulti
+                              value={item.ktv}
+                              name="colors"
+                              onChange={(option) => {
+                                handerSelect(option);
+                              }}
+                              options={datauserktv}
+                              className="basic-multi-select"
+                              classNamePrefix="select"
+                            />
+                          </td>
+                        )}
+                        <td onClick={() => setOpentex(true)}>
+                          {item.text}{" "}
+                          {opentext && (
+                            <input
+                              type="text"
+                              onChange={(e) => setchangeInput(e.target.value)}
+                            />
+                          )}
+                        </td>
+                        <td>
+                          <button
+                            onClick={() => {
+                              editItems(index);
+                            }}>
+                            Lưu
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
             </div>
           </div>
         )}
+        <div style={{ textAlign: "center" }}>
+          <Pagination
+            defaultCurrent={1}
+            showSizeChanger
+            defaultPageSize={20}
+            onShowSizeChange={onShowSizeChange}
+            total={totalItems}
+            onChange={handlePageChange}
+          />
+        </div>
       </div>{" "}
     </>
   );

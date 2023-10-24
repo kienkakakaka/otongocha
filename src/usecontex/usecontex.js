@@ -12,7 +12,6 @@ export const UserProvider = ({ children }) => {
   const [activeSidebar, setActiveSidebar] = useState(false);
   const [data, setdata] = useState([]);
   let arr = [];
-
   if (data !== null) {
     arr = Object.entries(data).map(([username, value]) => ({
       username,
@@ -20,10 +19,11 @@ export const UserProvider = ({ children }) => {
     }));
   }
 
+  const [searchText, setSearchText] = useState("");
   const [user, setUser] = useState();
   const [myuser, setmyUser] = useState();
   const [arrDate, setArrDate] = useState(() => {
-    onValue(ref(db, `/${username}/data`), (snapshot) => {
+    onValue(ref(db, `user/${username}/data`), (snapshot) => {
       return snapshot.val();
     });
   });
@@ -47,11 +47,14 @@ export const UserProvider = ({ children }) => {
     localStorage.removeItem("user");
   };
   const writeDatabase = (key, data) => {
+    console.log("set database");
     set(ref(db, `/${key}`), {
       data,
     });
   };
-
+  const compare = (id) => {
+    // setSearchText(id);
+  };
   return (
     <UserContext.Provider
       value={{
@@ -74,6 +77,9 @@ export const UserProvider = ({ children }) => {
         setIndexArr,
         indexItem,
         setIndexItem,
+        searchText,
+        setSearchText,
+        compare,
       }}>
       {children}
     </UserContext.Provider>

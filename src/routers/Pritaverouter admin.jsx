@@ -10,7 +10,7 @@ const PritaverouterAdmin = ({ children }) => {
   return username && username === "admin" ? (
     <>{children}</>
   ) : (
-    <Navigate to="/calendar" />
+    <Navigate to="/" />
   );
 };
 
