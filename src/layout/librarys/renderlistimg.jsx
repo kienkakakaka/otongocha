@@ -169,21 +169,22 @@ const Renderlistimg = () => {
           })}
       </Row>
 
-      <Row gutter={32}>
+      <div className="row">
         {list &&
           list.map((item) => {
             if (item.type === "img") {
               return (
-                <Col
-                  className="gutter-row"
-                  span={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+                <div className="col-3">
                   <Card
-                    style={{ margin: 10 }}
+                    style={{ margin: "10px 0" }}
                     bodyStyle={{ padding: 0 }}
                     cover={
                       <Image
-                        width={200}
-                        style={{ height: "150px" }}
+                        style={{
+                          height: "150px",
+                          objectFit: "cover",
+                          width: "100%",
+                        }}
                         src={item.url}
                       />
                     }
@@ -194,11 +195,11 @@ const Renderlistimg = () => {
                     ]}>
                     <Meta description={item.name} />
                   </Card>
-                </Col>
+                </div>
               );
             }
           })}
-      </Row>
+      </div>
     </div>
   );
 };

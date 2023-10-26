@@ -8,6 +8,8 @@ import { Button, Pagination, Modal } from "antd";
 import Select from "react-select";
 
 const Tabledashboard = () => {
+  const position = localStorage.getItem("position");
+  const admin = position === "Trưởng phòng" || position === "Quản lý";
   const history = useNavigate();
   const { setSearchText } = useContext(UserContext);
 
@@ -265,7 +267,7 @@ const Tabledashboard = () => {
               <th>Khách hàng</th>
               <th>KTV</th>
               <th>Thời gian</th>
-              <th></th>
+              {admin && <th></th>}
             </tr>
           </thead>
           <tbody>
@@ -276,17 +278,19 @@ const Tabledashboard = () => {
                   <td>{item.name}</td>
                   <td>{item.ktv && item.ktv.map((i) => <p>{i.value}</p>)}</td>
                   <td>{item.time}</td>
-                  <td>
-                    <button
-                      className="btn btn-warning"
-                      onClick={() => {
-                        setSearchText(item.code);
-                        Messenger("success", "Tham chiếu thành công");
-                        history("/");
-                      }}>
-                      Tham chiếu
-                    </button>
-                  </td>
+                  {admin && (
+                    <td>
+                      <button
+                        className="btn btn-warning"
+                        onClick={() => {
+                          setSearchText(item.code);
+                          Messenger("success", "Tham chiếu thành công");
+                          history("/");
+                        }}>
+                        Tham chiếu
+                      </button>
+                    </td>
+                  )}
                 </tr>
               ))}
           </tbody>

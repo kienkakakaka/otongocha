@@ -12,8 +12,10 @@ import PhotoLibraryIcon from "@mui/icons-material/PhotoLibrary";
 import ExtensionIcon from "@mui/icons-material/Extension";
 const Sidebar = () => {
   const username = localStorage.getItem("user");
+  const position = localStorage.getItem("position");
   const { setSearchText } = useContext(UserContext);
   const { activeSidebar } = useContext(UserContext);
+  const admin = position === "Trưởng phòng" || position === "Quản lý";
   return (
     <div>
       <nav id="sidebar" className={activeSidebar ? "active" : ""}>
@@ -24,14 +26,15 @@ const Sidebar = () => {
           </h3>
         </div>
         <ul className="list-unstyled components">
-          <li>
-            <Link to="/" className="dashboard">
-              <DashboardIcon />
-              <span>Tổng quan</span>
-            </Link>
-          </li>
-
-          {username === "admin" && (
+          {admin && (
+            <li>
+              <Link to="/" className="dashboard">
+                <DashboardIcon />
+                <span>Tổng quan</span>
+              </Link>
+            </li>
+          )}
+          {admin && (
             <li onClick={() => setSearchText("")} className="dropdown">
               <Link to="/events" data-toggle="collapse" aria-expanded="false">
                 <AspectRatioIcon />
@@ -39,13 +42,16 @@ const Sidebar = () => {
               </Link>
             </li>
           )}
-          <li className="">
-            <Link to="/calendar">
-              <DateRangeIcon />
-              <span>Lịch</span>
-            </Link>
-          </li>
-          {username === "admin" && (
+          {username !== "giamdoc" && (
+            <li className="">
+              <Link to="/calendar">
+                <DateRangeIcon />
+                <span>Lịch</span>
+              </Link>
+            </li>
+          )}
+
+          {admin && (
             <li className="dropdown">
               <Link to="/tables" data-toggle="collapse" aria-expanded="false">
                 <GridOnIcon />
@@ -53,18 +59,18 @@ const Sidebar = () => {
               </Link>
             </li>
           )}
-          {username === "admin" && (
-            <li onClick={() => setSearchText("")} className="dropdown">
-              <Link
-                to="/kpi"
-                href="#pageSubmenu2"
-                data-toggle="collapse"
-                aria-expanded="false">
-                <AppsIcon />
-                <span>KPI chỉ tiêu</span>
-              </Link>
-            </li>
-          )}
+
+          <li onClick={() => setSearchText("")} className="dropdown">
+            <Link
+              to="/kpi"
+              href="#pageSubmenu2"
+              data-toggle="collapse"
+              aria-expanded="false">
+              <AppsIcon />
+              <span>KPI chỉ tiêu</span>
+            </Link>
+          </li>
+
           {/* <li className="dropdown">
             <Link to="/charts" data-toggle="collapse" aria-expanded="false">
               <EqualizerIcon />
@@ -79,7 +85,7 @@ const Sidebar = () => {
             </Link>
           </li>
 
-          {username === "admin" && (
+          {admin && (
             <li className="dropdown">
               <Link to="/manage" data-toggle="collapse" aria-expanded="false">
                 <BorderColorIcon />
@@ -87,13 +93,15 @@ const Sidebar = () => {
               </Link>
             </li>
           )}
+          {username !== "giamdoc" && (
+            <li className="dropdown">
+              <Link to="/myself" data-toggle="collapse" aria-expanded="false">
+                <ContentCopyIcon />
+                <span>Cá nhân</span>
+              </Link>
+            </li>
+          )}
 
-          <li className="dropdown">
-            <Link to="/myself" data-toggle="collapse" aria-expanded="false">
-              <ContentCopyIcon />
-              <span>Cá nhân</span>
-            </Link>
-          </li>
           <li className="dropdown">
             <Link to="/library" data-toggle="collapse" aria-expanded="false">
               <PhotoLibraryIcon />

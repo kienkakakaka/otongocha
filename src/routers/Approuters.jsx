@@ -24,9 +24,9 @@ const Approuters = () => {
         <Route
           path="/"
           element={
-            <Pritaverouter>
+            <PritaverouterAdmin>
               <Forms />
-            </Pritaverouter>
+            </PritaverouterAdmin>
           }
         />
         <Route path="/login" element={<Logins />} />
@@ -74,9 +74,9 @@ const Approuters = () => {
         <Route
           path="/kpi"
           element={
-            <PritaverouterAdmin>
+            <Pritaverouter>
               <Dashboard />
-            </PritaverouterAdmin>
+            </Pritaverouter>
           }
         />
         <Route

@@ -13,24 +13,88 @@ const TableManagaScores = () => {
   const [month, setMonth] = useState(new Date().getMonth());
   const [year, setYear] = useState(new Date().getFullYear());
   const [userTitel, setUserTitel] = useState([]);
+  const [name, setName] = useState("");
   const [dataUserSelect, setDataUserSelect] = useState(null);
   useEffect(() => {
     readDatabase("/scores", setArrdata);
     readDatabase("/user", setUserTitel);
   }, []);
-  console.log(userTitel);
+  if (Arrdata === null) return;
   const Arr_item_scores = Arrdata && Object.values(Arrdata);
-  const Arr_item_filter = Arr_item_scores.filter(
-    (item) =>
-      new Date(item.time).getMonth() === month &&
-      new Date(item.time).getFullYear() === year
-  );
+  const Arr_item_filter =
+    Arr_item_scores &&
+    Arr_item_scores.filter(
+      (item) =>
+        new Date(item.time).getMonth() === month &&
+        new Date(item.time).getFullYear() === year &&
+        item.type === "user"
+    );
+  const Arr_item_admin =
+    Arrdata &&
+    Arr_item_scores.findIndex(
+      (item) =>
+        item.name === name &&
+        item.type === "admin" &&
+        new Date(item.time).getMonth() === month &&
+        new Date(item.time).getFullYear() === year
+    );
+  const Arr_item_super_admin =
+    Arrdata &&
+    Arr_item_scores.findIndex(
+      (item) =>
+        item.name === name &&
+        item.type === "superadmin" &&
+        new Date(item.time).getMonth() === month &&
+        new Date(item.time).getFullYear() === year
+    );
+  let userScores_admin;
+  let userScores_super_admin;
+  if (Arr_item_admin !== -1) userScores_admin = Arr_item_scores[Arr_item_admin];
+  if (Arr_item_super_admin !== -1)
+    userScores_super_admin = Arr_item_scores[Arr_item_super_admin];
   const submitScores = (index, name) => {
     setArrdataIndex(Arr_item_scores[index]);
+    setName(name);
     setIsModalOpen(true);
     if (userTitel[name].titel) setDataUserSelect(userTitel[name].titel);
   };
-
+  const Rendertd = (names) => {
+    const Arr_item_super_admin =
+      Arrdata &&
+      Arr_item_scores.findIndex(
+        (item) =>
+          item.name === names &&
+          item.type === "superadmin" &&
+          new Date(item.time).getMonth() === month &&
+          new Date(item.time).getFullYear() === year
+      );
+    const Arr_item_admin =
+      Arrdata &&
+      Arr_item_scores.findIndex(
+        (item) =>
+          item.name === names &&
+          item.type === "admin" &&
+          new Date(item.time).getMonth() === month &&
+          new Date(item.time).getFullYear() === year
+      );
+    const Arr_item_user =
+      Arrdata &&
+      Arr_item_scores.findIndex(
+        (item) =>
+          item.name === names &&
+          item.type === "user" &&
+          new Date(item.time).getMonth() === month &&
+          new Date(item.time).getFullYear() === year
+      );
+    if (Arr_item_super_admin !== -1) {
+      return "Giám đốc đã duyệt";
+    } else if (Arr_item_admin !== -1) {
+      return "Trưởng phòng đã duyệt";
+    } else if (Arr_item_user !== -1) {
+      return "Chờ duyệt";
+    }
+  };
+  if (Arrdata === null) return;
   return (
     <div>
       <ModalScores
@@ -38,6 +102,7 @@ const TableManagaScores = () => {
         ArrdataIndex={ArrdataIndex}
         setIsModalOpen={setIsModalOpen}
         user={dataUserSelect}
+        name={name}
       />
       <h1 className="text-center text-4xl m-2 font-medium">
         Phiếm điểm tháng {month + 1}
@@ -59,7 +124,7 @@ const TableManagaScores = () => {
                 <td>{index + 1}</td>
                 <td>{item.name}</td>
                 <td>{RenderTime(item.time)}</td>
-                <td>{!item.sucuss ? "Chờ duyệt" : "Đã duyệt"}</td>
+                <td>{Rendertd(item.name)}</td>
                 <td>
                   <button
                     onClick={() => submitScores(index, item.name)}

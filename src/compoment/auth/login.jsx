@@ -1,30 +1,36 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { auth } from "../../config";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import style from "./login.module.scss";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../usecontex/usecontex";
-import { db } from "../../config";
-
-import { set, ref, onValue } from "firebase/database";
-
+import { user_super_admin, user_admin, user } from "../../data/user";
 function Logins() {
-  const [userName, setUsername] = useState();
-  const [passwords, setPassword] = useState();
+  const [userName, setUsername] = useState("");
+  const [passwords, setPassword] = useState("");
+  const [user, setUser] = useState("");
+  const [positionUser, setPositionUser] = useState("");
 
   const history = useNavigate();
-  const { setIsLogin, setUser, writeDatabase, logOut } =
+  const { setIsLogin, writeDatabase, logOut, readDatabase } =
     useContext(UserContext);
+  // useEffect(() => {
+  //   readDatabase(`/user/${userName.split("@")[0]}/titel/data`, setPositionUser);
+  // }, []);
+
+  if (user) {
+    localStorage.setItem("user", user);
+    localStorage.setItem("position", positionUser);
+    history("/calendar");
+    window.location.reload();
+  }
 
   const HanderSubmit = (e) => {
     e.preventDefault();
     signInWithEmailAndPassword(auth, userName, passwords)
       .then((userCredential) => {
         const user = userCredential.user;
-
-        localStorage.setItem("user", user.email.split("@")[0]);
-        history("/calendar");
-        window.location.reload();
+        setUser(user.email.split("@")[0]);
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -34,6 +40,18 @@ function Logins() {
         console.log(errorMessage);
       });
   };
+  const changeUsername = (e) => {
+    console.log(e.target.value);
+    readDatabase(
+      `/user/${e.target.value.split("@")[0]}/titel/data/position`,
+      setPositionUser
+    );
+    // if (e.target.value !== "") {
+    //
+    // }
+
+    setUsername(e.target.value);
+  };
 
   return (
     <div className={style["form-container login-container"]}>
@@ -42,7 +60,7 @@ function Logins() {
         <div className={style["form-control2"]}>
           <input
             type="email"
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={changeUsername}
             className={style["email-2"]}
             placeholder="Email"
           />

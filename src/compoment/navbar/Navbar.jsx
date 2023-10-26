@@ -12,9 +12,10 @@ const Navbar = () => {
   const history = useNavigate();
   const logout = () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("position");
     localStorage.setItem("isLogin", false);
-    window.location.reload();
     history("/login");
+    // window.location.reload();
   };
   return (
     <nav className="flex justify-between m-2">
@@ -27,7 +28,7 @@ const Navbar = () => {
       </button>
 
       <div>
-        <ul className="flex flex-row">
+        <ul className="flex ">
           <li className=" nav-item ">
             <a style={{ color: "black" }} href="#" data-toggle="dropdown">
               <NotificationsNoneIcon

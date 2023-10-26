@@ -80,7 +80,7 @@ const Calendar = () => {
       arrDates = arrDate[indexEditDay].value;
     }
   }
-  if (arrDate[indexEditDay]) {
+  if (indexEditDay && arrDate[indexEditDay]) {
     const arrr = [...arrDate];
     console.log(arrDate[indexEditDay]);
     const items = arrr[indexEditDay].value;
@@ -94,7 +94,7 @@ const Calendar = () => {
     }
     writeDatabase(`/user/${username}/value`, arrr);
   }
-  console.log(arrDate);
+
   useEffect(() => {
     const firstDay = new Date(year, month, 1).getDay(); //ngày đầu tiên của tháng trước là thứ mấy(5)
     const prevDay = new Date(year, month, 0).getDate(); // ngày cuối cùng của tháng trước (31)
@@ -297,13 +297,6 @@ const Calendar = () => {
       ];
       writeDatabase(`datadayoff`, dataEventDay);
     }
-
-    // else {
-    //   let dataEventDay = [...dataDayOff];
-    //   dataEventDay[indexValueoffdate].success = "wait";
-    //   writeDatabase(`datadayoff`, dataEventDay);
-    // }
-
     Messenger("success", "Nộp đơn nghỉ phép thành công");
   };
   const handerSelect = (e) => setValueSelect(e.target.value);

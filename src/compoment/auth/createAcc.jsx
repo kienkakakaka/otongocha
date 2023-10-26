@@ -137,6 +137,7 @@ function Sigup() {
             onChange={(e) => setPosition(e.target.value)}
             aria-label="Default select example">
             <option selected>Chức vụ</option>
+            <option value="Quản lý">Quản lý</option>
             <option value="Trưởng phòng">Trưởng phòng</option>
             <option value="Phó phòng">Phó phòng</option>
             <option value="Tổ trưởng">Tổ trưởng</option>
