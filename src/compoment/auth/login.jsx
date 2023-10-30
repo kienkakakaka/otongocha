@@ -5,6 +5,7 @@ import style from "./login.module.scss";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../usecontex/usecontex";
 import { user_super_admin, user_admin, user } from "../../data/user";
+import photo from "../../media/img/logo.png";
 function Logins() {
   const [userName, setUsername] = useState("");
   const [passwords, setPassword] = useState("");
@@ -21,7 +22,7 @@ function Logins() {
   if (user) {
     localStorage.setItem("user", user);
     localStorage.setItem("position", positionUser);
-    history("/calendar");
+    history("/kpi");
     window.location.reload();
   }
 
@@ -54,9 +55,10 @@ function Logins() {
   };
 
   return (
-    <div className={style["form-container login-container"]}>
+    <div
+      className={`container mt-10 ${style["form-container login-container"]}`}>
       <form className={style["form-lg"]}>
-        <h1>Login here.</h1>
+        <img src={photo} alt="" />
         <div className={style["form-control2"]}>
           <input
             type="email"

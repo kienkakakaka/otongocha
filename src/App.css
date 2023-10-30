@@ -3,6 +3,11 @@
 @import "tailwindcss/utilities";
 /* @import url("https://fonts.googleapis.com/css?family=Nova+Slim&display=swap");
 @import url("./bootstrap.min.css"); */
+.custom-icon {
+  color: black;
+  font-size: 40px;
+  margin-left: 5px;
+}
 #wave .dot {
   display: inline-block;
   width: 3px;
@@ -34,6 +39,7 @@
 
 body,
 html {
+  zoom: 90%;
   line-height: 1.8;
   font-family: "Roboto", sans-serif;
   color: #555e58;
@@ -128,7 +134,7 @@ a:focus {
   left: 0;
   z-index: 11;
   width: 260px;
-  overflow: auto;
+
   transition: all 0.3s;
   background: #ffffff;
   box-shadow: 0 10px 30px -12px rgb(0 0 0 / 42%),
@@ -604,7 +610,7 @@ footer .copyright {
 ----------------------------------------------------- */
 
 @media only screen and (min-width: 992px) {
-  #sidebar.active {
+  /* #sidebar.active {
     width: 80px;
     height: 100% !important;
     position: absolute !important;
@@ -613,8 +619,8 @@ footer .copyright {
     z-index: 666;
     float: left !important;
     bottom: 0 !important;
-  }
-
+  } */
+  /* 
   #sidebar.active .sidebar-header h3 span {
     display: none;
     transition: all 0.5s ease;
@@ -628,7 +634,7 @@ footer .copyright {
   #sidebar.active .dropdown-toggle::after {
     display: none;
     transition: all 0.5s ease;
-  }
+  } */
 
   #content {
     width: calc(100% - 260px);
@@ -638,7 +644,7 @@ footer .copyright {
     background-color: #eeeeee;
   }
 
-  #content.active {
+  /* #content.active {
     width: calc(100% - 80px);
   }
 
@@ -652,9 +658,13 @@ footer .copyright {
     top: 0;
     border: 1px solid #dcd9d9;
     z-index: 4;
-  }
+  } */
 }
-
+/* @media only screen and (max-width: 600px) {
+  .img-fluid {
+    display: none;
+  }
+} */
 @media only screen and (min-width: 992px) {
   .dropdown-menu {
     border: 0;
@@ -688,7 +698,7 @@ footer .copyright {
     width: 80px;
     height: 100% !important;
     position: absolute !important;
-    overflow: visible !important;
+    /* overflow: visible !important; */
     top: 0 !important;
     z-index: 666;
     float: left !important;

@@ -4,7 +4,7 @@ import { MyContext } from "../../usecontex/usecontex1";
 import { Button, Modal } from "antd";
 import ModalScores from "./ModalScores";
 
-const TableManagaScores = () => {
+const TableManagaScores = ({ length }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { readDatabase } = useContext(UserContext);
   const [Arrdata, setArrdata] = useState([]);
@@ -94,7 +94,7 @@ const TableManagaScores = () => {
       return "Chờ duyệt";
     }
   };
-  if (Arrdata === null) return;
+
   return (
     <div>
       <ModalScores
@@ -107,6 +107,7 @@ const TableManagaScores = () => {
       <h1 className="text-center text-4xl m-2 font-medium">
         Phiếm điểm tháng {month + 1}
       </h1>
+      <div className="wrapper"></div>
       <table className=" table table-bordered border-black">
         <thead>
           <tr>

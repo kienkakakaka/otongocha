@@ -5,6 +5,8 @@ import { getDatabase, push, ref as dbRef, set } from "firebase/database";
 // import data from "../data/data2.json";
 export const MyContext = React.createContext();
 export const MyProvider = ({ children }) => {
+  const username = localStorage.getItem("user");
+  const super_admin = username === "giamdoc";
   const [dataItemArr, setDataItemArr] = useState([]);
   const [idItemCars, setIdItemCars] = useState([]);
   const [itemsNote, setItemnote] = useState([]);
@@ -31,13 +33,22 @@ export const MyProvider = ({ children }) => {
   }, []);
   const [dataDayOff, setDataDayOff] = useState([]);
   let result = useMemo(() => {
-    return (
-      dataDayOff &&
-      dataDayOff.reduce((acc, day) => {
-        if (day.success === "wait") return acc + 1;
-        return acc;
-      }, 0)
-    );
+    if (super_admin) {
+      return (
+        dataDayOff &&
+        dataDayOff.reduce((acc, day) => {
+          if (day.success === "wait" && day.admin) return acc + 1;
+          return acc;
+        }, 0)
+      );
+    } else
+      return (
+        dataDayOff &&
+        dataDayOff.reduce((acc, day) => {
+          if (day.success === "wait") return acc + 1;
+          return acc;
+        }, 0)
+      );
   }, [dataDayOff]);
   const RenderTime = (datadate) => {
     const date = new Date(datadate);

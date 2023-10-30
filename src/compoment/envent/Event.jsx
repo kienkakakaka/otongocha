@@ -288,82 +288,85 @@ const Event = () => {
         value={searchText1}
         onChange={(e) => setSearchText1(e.target.value)}
       />
-      <table className="table table-bordered border-black">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Hãng</th>
-            <th>Xe</th>
-            <th>Biển số</th>
-            <th>Số Vin</th>
-            <th style={{ whiteSpace: "nowrap" }}>Hộp số</th>
-            <th>Màu xe</th>
-            <th>Số KM</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {valueCar !== null &&
-            valueCar.length !== 0 &&
-            (valueCar
-              ? valueCar.filter((data) => {
-                  // console.log(data);
-                  return data.Conten?.includes(searchText1);
-                })
-              : valueCar
-            ).map((data, index) => (
-              <tr key={index}>
-                <td>{index + 1}</td>
-                <td>{data.TypeCar}</td>
-                <td style={{ whiteSpace: "nowrap" }}>{data.Car}</td>
-                <td>{data.Conten}</td>
-                <td>{data.numberVin}</td>
-                <td style={{ whiteSpace: "nowrap" }}>{data.typeNumber}</td>
-                <td
-                  className="d-flex justify-content-center align-items-center "
-                  style={{ color: `${data.colorCar}`, fontSize: "25px" }}>
-                  <i class="fa-solid fa-car"></i>
-                </td>
-                <td>{data.numberKilometer}</td>
+      <div className="wrapper">
+        <table className="table table-bordered border-black bg-white">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Hãng</th>
+              <th>Xe</th>
+              <th>Biển số</th>
+              <th>Số Vin</th>
+              <th style={{ whiteSpace: "nowrap" }}>Hộp số</th>
+              <th>Màu xe</th>
+              <th>Số KM</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {valueCar !== null &&
+              valueCar.length !== 0 &&
+              (valueCar
+                ? valueCar.filter((data) => {
+                    // console.log(data);
+                    return data.Conten?.includes(searchText1);
+                  })
+                : valueCar
+              ).map((data, index) => (
+                <tr key={index}>
+                  <td>{index + 1}</td>
+                  <td>{data.TypeCar}</td>
+                  <td className="whitespace-nowrap ">{data.Car}</td>
+                  <td className="whitespace-nowrap ">{data.Conten}</td>
+                  <td>{data.numberVin}</td>
+                  <td style={{ whiteSpace: "nowrap" }}>{data.typeNumber}</td>
+                  <td
+                    className="d-flex justify-content-center align-items-center "
+                    style={{ color: `${data.colorCar}`, fontSize: "25px" }}>
+                    <i class="fa-solid fa-car"></i>
+                  </td>
+                  <td>{data.numberKilometer}</td>
 
-                <td className="d-flex flex-row">
-                  <button
-                    onClick={() => {
-                      editItems(data.Conten);
-                      Messenger("info", "Vui lòng chỉnh sửa");
-                    }}
-                    className="btn btn-success">
-                    Chỉnh sửa
-                  </button>
-                  <button
-                    onClick={() => {
-                      removeItems(data.Conten);
-                      Messenger("error", "xoá sự kiện thành công");
-                    }}
-                    className="btn btn-danger">
-                    Xoá
-                  </button>
-                  <button
-                    className="btn btn-warning"
-                    onClick={() => {
-                      setSearchText(data.Conten);
-                      Messenger("success", "Tham chiếu thành công");
-                      history("/form");
-                    }}>
-                    Tham chiếu
-                  </button>
-                  <button
-                    className="btn btn-secondary"
-                    onClick={(e) => {
-                      listItemsNote(e, data.Conten);
-                    }}>
-                    Ghi chú
-                  </button>
-                </td>
-              </tr>
-            ))}
-        </tbody>
-      </table>
+                  <td className="d-flex flex-row flex-nowrap">
+                    <button
+                      onClick={() => {
+                        editItems(data.Conten);
+                        Messenger("info", "Vui lòng chỉnh sửa");
+                      }}
+                      className="btn btn-success">
+                      Chỉnh sửa
+                    </button>
+                    <button
+                      onClick={() => {
+                        removeItems(data.Conten);
+                        Messenger("error", "xoá sự kiện thành công");
+                      }}
+                      className="btn btn-danger">
+                      Xoá
+                    </button>
+                    <button
+                      className="btn btn-warning"
+                      onClick={() => {
+                        setSearchText(data.Conten);
+                        Messenger("success", "Tham chiếu thành công");
+                        history("/form");
+                      }}>
+                      Tham chiếu
+                    </button>
+                    <button
+                      className="btn btn-secondary"
+                      onClick={(e) => {
+                        listItemsNote(e, data.Conten);
+                      }}>
+                      Ghi chú
+                    </button>
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      </div>
+
       <Oveplayevent />
     </div>
   );

@@ -3,6 +3,8 @@ import { UserContext } from "../../usecontex/usecontex";
 import { MyContext } from "../../usecontex/usecontex1";
 
 const Manageoffday = () => {
+  const username = localStorage.getItem("user");
+  const super_admin = username === "giamdoc";
   const { Messenger } = useContext(MyContext);
   const { arr, readDatabase, writeDatabase } = useContext(UserContext);
   const [arrDate, setArrDate] = useState([]);
@@ -12,13 +14,6 @@ const Manageoffday = () => {
     readDatabase(`user`, setArrDate);
     readDatabase(`datadayoff/data`, setDataDayOff);
   }, []);
-  // let result = useMemo(() => {
-  //   return dataDayOff.reduce((acc, day) => {
-  //     if (day.success === 'wait') return acc + 1;
-  //     return acc;
-  //   }, 0);
-  // }, [dataDayOff]);
-
   const successitem = (e, item) => {
     e.preventDefault();
     let dayoff = [...dataDayOff];
@@ -34,6 +29,8 @@ const Manageoffday = () => {
         );
       });
     dayoff[indexItemSuccess].success = "ok";
+    dayoff[indexItemSuccess].usersucsess = username;
+
     writeDatabase(`datadayoff`, dayoff);
 
     const indexEditItems = arrDate[item.username].value.data.findIndex(
@@ -67,9 +64,9 @@ const Manageoffday = () => {
       });
 
     dayoff[indexItemSuccess].success = "no";
-    // delete dayoff[indexItemSuccess].titel;
-
     dayoff[indexItemSuccess].textadmin = textadmin;
+
+    dayoff[indexItemSuccess].usersucsess = username;
     writeDatabase(`datadayoff`, dayoff);
 
     const indexEditItems = arrDate[item.username].value.data.findIndex(
@@ -79,14 +76,14 @@ const Manageoffday = () => {
     );
     let addSuccess = [...arrDate[item.username].value.data];
     addSuccess[indexEditItems].value[item.day].success = "no";
-    // delete addSuccess[indexEditItems].value[item.day].success;
-    // delete addSuccess[indexEditItems].value[item.day].isSelect;
     addSuccess[indexEditItems].value[item.day].textadmin = textadmin;
+    addSuccess[indexEditItems].value[item.day].usersucsess = username;
     writeDatabase(`/user/${item.username}/value`, addSuccess);
     Messenger("error", "Đã từ chối đơn nghỉ phép");
   };
+  console.log(super_admin);
   return (
-    <div>
+    <div className="wrapper">
       <table className="table table-bordered border-black">
         <thead>
           <tr>
@@ -96,6 +93,7 @@ const Manageoffday = () => {
             <th>Lý do</th>
             <th>Ngày nộp đơn</th>
             <th>Trạng thái</th>
+
             <th></th>
           </tr>
         </thead>
@@ -115,32 +113,31 @@ const Manageoffday = () => {
               })
               .reverse()
               .map((item, index) => {
-                // if (item.success === true || (!item.success && !item.titel))
-                //   return;
-                return (
-                  <tr>
-                    <td>{item.username}</td>
-                    <td>
-                      {item.day + 1}/{item.month}/{item.year}
-                    </td>
-                    <td>
-                      {item.titel === "offfullday" ? "Nghỉ nguyên ngày" : ""}
-                      {item.titel === "offmorning" ? "Nghỉ buổi sáng" : ""}
-                      {item.titel === "offafternoon" ? "Nghỉ buổi chiều" : ""}
-                    </td>
-                    <td>{item.text}</td>
-                    <td>
-                      {item.timeHours}:{item.timeMinutes}
-                      {"  "}
-                      {item.dayevent}/{item.month}/{item.year}
-                    </td>
-                    <td>
-                      {item.success === "wait" && "Chờ duyệt"}
-                      {item.success === "ok" && "Đã duyệt"}
-                      {item.success === "no" && "Từ chối"}
-                    </td>
-                    <td>
-                      {item.success === "wait" && (
+                if (super_admin && item.admin)
+                  return (
+                    <tr>
+                      <td>{item.username}</td>
+                      <td>
+                        {item.day + 1}/{item.month}/{item.year}
+                      </td>
+                      <td>
+                        {item.titel === "offfullday" ? "Nghỉ nguyên ngày" : ""}
+                        {item.titel === "offmorning" ? "Nghỉ buổi sáng" : ""}
+                        {item.titel === "offafternoon" ? "Nghỉ buổi chiều" : ""}
+                      </td>
+                      <td>{item.text}</td>
+                      <td>
+                        {item.timeHours}:{item.timeMinutes}
+                        {"  "}
+                        {item.dayevent}/{item.month}/{item.year}
+                      </td>
+                      <td>
+                        {item.success === "wait" && "Chờ duyệt"}
+                        {item.success === "ok" &&
+                          `${item.usersucsess} đã duyệt `}
+                        {item.success === "no" && `${item.usersucsess} từ chối`}
+                      </td>
+                      <td>
                         <>
                           <button
                             className="btn btn-primary"
@@ -153,10 +150,49 @@ const Manageoffday = () => {
                             Từ chối
                           </button>
                         </>
-                      )}
-                    </td>
-                  </tr>
-                );
+                      </td>
+                    </tr>
+                  );
+                if (!item.admin && !super_admin)
+                  return (
+                    <tr>
+                      <td>{item.username}</td>
+                      <td>
+                        {item.day + 1}/{item.month}/{item.year}
+                      </td>
+                      <td>
+                        {item.titel === "offfullday" ? "Nghỉ nguyên ngày" : ""}
+                        {item.titel === "offmorning" ? "Nghỉ buổi sáng" : ""}
+                        {item.titel === "offafternoon" ? "Nghỉ buổi chiều" : ""}
+                      </td>
+                      <td>{item.text}</td>
+                      <td>
+                        {item.timeHours}:{item.timeMinutes}
+                        {"  "}
+                        {item.dayevent}/{item.month}/{item.year}
+                      </td>
+                      <td>
+                        {item.success === "wait" && "Chờ duyệt"}
+                        {item.success === "ok" &&
+                          `${item.usersucsess} đã duyệt `}
+                        {item.success === "no" && `${item.usersucsess} từ chối`}
+                      </td>
+                      <td>
+                        <>
+                          <button
+                            className="btn btn-primary"
+                            onClick={(e) => successitem(e, item)}>
+                            Duyệt đơn
+                          </button>
+                          <button
+                            className="btn btn-danger"
+                            onClick={(e) => remove(e, item, index)}>
+                            Từ chối
+                          </button>
+                        </>
+                      </td>
+                    </tr>
+                  );
               })}
         </tbody>
       </table>

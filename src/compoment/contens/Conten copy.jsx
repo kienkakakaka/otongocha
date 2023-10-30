@@ -76,7 +76,7 @@ const Conten = () => {
                 <h4 className="card-title">Doanh số hôm nay</h4>
                 <p className="category">Thứ 6 ngày 28 tháng 9 năm 2023</p>
               </div>
-              <div className="card-content table-responsive">
+              <div className="card-content table-responsive wrapper">
                 <table className="table table-hover">
                   <thead className="text-primary">
                     <tr>

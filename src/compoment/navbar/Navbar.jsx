@@ -5,6 +5,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import PersonIcon from "@mui/icons-material/Person";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import { LeftCircleOutlined } from "@ant-design/icons";
 
 const Navbar = () => {
   const { activeSidebar, setActiveSidebar } = useContext(UserContext);
@@ -19,13 +20,10 @@ const Navbar = () => {
   };
   return (
     <nav className="flex justify-between m-2">
-      <button
-        type="button"
+      <LeftCircleOutlined
+        className="custom-icon"
         onClick={() => setActiveSidebar(!activeSidebar)}
-        id="sidebarCollapse"
-        className="">
-        <ArrowBackIosIcon />
-      </button>
+      />
 
       <div>
         <ul className="flex ">

@@ -10,24 +10,22 @@ import BorderColorIcon from "@mui/icons-material/BorderColor";
 import AppsIcon from "@mui/icons-material/Apps";
 import PhotoLibraryIcon from "@mui/icons-material/PhotoLibrary";
 import ExtensionIcon from "@mui/icons-material/Extension";
+import photo from "../../media/img/logo.png";
 const Sidebar = () => {
   const username = localStorage.getItem("user");
   const position = localStorage.getItem("position");
   const { setSearchText } = useContext(UserContext);
-  const { activeSidebar } = useContext(UserContext);
+  const { activeSidebar, setActiveSidebar } = useContext(UserContext);
   const admin = position === "Trưởng phòng" || position === "Quản lý";
   return (
     <div>
       <nav id="sidebar" className={activeSidebar ? "active" : ""}>
         <div className="sidebar-header">
-          <h3>
-            {/* <img src="../../media/img/logo.png" className="img-fluid" /> */}
-            <span>otongocha.vn</span>
-          </h3>
+          <img src={photo} className="img-fluid" />
         </div>
         <ul className="list-unstyled components">
           {admin && (
-            <li>
+            <li onClick={() => setActiveSidebar((pre) => !pre)}>
               <Link to="/" className="dashboard">
                 <DashboardIcon />
                 <span>Tổng quan</span>
@@ -35,7 +33,12 @@ const Sidebar = () => {
             </li>
           )}
           {admin && (
-            <li onClick={() => setSearchText("")} className="dropdown">
+            <li
+              onClick={() => {
+                setSearchText("");
+                setActiveSidebar((pre) => !pre);
+              }}
+              className="dropdown">
               <Link to="/events" data-toggle="collapse" aria-expanded="false">
                 <AspectRatioIcon />
                 <span>Sự kiện</span>
@@ -43,7 +46,7 @@ const Sidebar = () => {
             </li>
           )}
           {username !== "giamdoc" && (
-            <li className="">
+            <li onClick={() => setActiveSidebar((pre) => !pre)} className="">
               <Link to="/calendar">
                 <DateRangeIcon />
                 <span>Lịch</span>
@@ -52,7 +55,9 @@ const Sidebar = () => {
           )}
 
           {admin && (
-            <li className="dropdown">
+            <li
+              onClick={() => setActiveSidebar((pre) => !pre)}
+              className="dropdown">
               <Link to="/tables" data-toggle="collapse" aria-expanded="false">
                 <GridOnIcon />
                 <span>Bảng công</span>
@@ -60,7 +65,12 @@ const Sidebar = () => {
             </li>
           )}
 
-          <li onClick={() => setSearchText("")} className="dropdown">
+          <li
+            onClick={() => {
+              setSearchText("");
+              setActiveSidebar((pre) => !pre);
+            }}
+            className="dropdown">
             <Link
               to="/kpi"
               href="#pageSubmenu2"
@@ -78,15 +88,21 @@ const Sidebar = () => {
               <span>Biểu đồ</span>
             </Link>
           </li> */}
-          <li className="dropdown">
-            <Link to="/table2" data-toggle="collapse" aria-expanded="false">
-              <ExtensionIcon />
-              <span>Bảng lương</span>
-            </Link>
-          </li>
+          {username !== "giamdoc" && (
+            <li
+              onClick={() => setActiveSidebar((pre) => !pre)}
+              className="dropdown">
+              <Link to="/table2" data-toggle="collapse" aria-expanded="false">
+                <ExtensionIcon />
+                <span>Bảng lương</span>
+              </Link>
+            </li>
+          )}
 
           {admin && (
-            <li className="dropdown">
+            <li
+              onClick={() => setActiveSidebar((pre) => !pre)}
+              className="dropdown">
               <Link to="/manage" data-toggle="collapse" aria-expanded="false">
                 <BorderColorIcon />
                 <span>Quản lý</span>
@@ -94,7 +110,9 @@ const Sidebar = () => {
             </li>
           )}
           {username !== "giamdoc" && (
-            <li className="dropdown">
+            <li
+              onClick={() => setActiveSidebar((pre) => !pre)}
+              className="dropdown">
               <Link to="/myself" data-toggle="collapse" aria-expanded="false">
                 <ContentCopyIcon />
                 <span>Cá nhân</span>
@@ -102,7 +120,9 @@ const Sidebar = () => {
             </li>
           )}
 
-          <li className="dropdown">
+          <li
+            onClick={() => setActiveSidebar((pre) => !pre)}
+            className="dropdown">
             <Link to="/library" data-toggle="collapse" aria-expanded="false">
               <PhotoLibraryIcon />
               <span>Thư viện</span>

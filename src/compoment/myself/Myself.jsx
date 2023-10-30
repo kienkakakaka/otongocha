@@ -252,43 +252,46 @@ const Myself = () => {
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
           />
-          <table className="table table-hover">
-            <thead className="text-primary">
-              <tr>
-                <th>Mã đơn</th>
-                <th>Khách hàng</th>
-                {username === " admin" && <th>SDT</th>}
-                <th>Thời gian tạo</th>
-              </tr>
-            </thead>
-            <tbody>
-              {myuser &&
-                myuser.length !== 0 &&
-                (searchText
-                  ? myuser.filter((data) => {
-                      return (
-                        (data.code && data.code.includes(searchText)) ||
-                        (data.name && data.name.includes(searchText)) ||
-                        (data.phone_number &&
-                          data.phone_number.includes(searchText)) ||
-                        (data.id && data.id.includes(searchText))
-                      );
-                    })
-                  : myuser
-                ).map((data, index) => (
-                  <tr
-                    onClick={() => {
-                      handerClick(index);
-                      setCodeItem(data.code);
-                    }}>
-                    <td>{data.code}</td>
-                    <td>{data.name}</td>
-                    {username === " admin" && <td>{data.phone_number}</td>}
-                    <td>{RenderTime(data.created_on)}</td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
+          <div className="wrapper">
+            {" "}
+            <table className="table table-hover">
+              <thead className="text-primary">
+                <tr>
+                  <th>Mã đơn</th>
+                  <th>Khách hàng</th>
+                  {username === " admin" && <th>SDT</th>}
+                  <th>Thời gian tạo</th>
+                </tr>
+              </thead>
+              <tbody>
+                {myuser &&
+                  myuser.length !== 0 &&
+                  (searchText
+                    ? myuser.filter((data) => {
+                        return (
+                          (data.code && data.code.includes(searchText)) ||
+                          (data.name && data.name.includes(searchText)) ||
+                          (data.phone_number &&
+                            data.phone_number.includes(searchText)) ||
+                          (data.id && data.id.includes(searchText))
+                        );
+                      })
+                    : myuser
+                  ).map((data, index) => (
+                    <tr
+                      onClick={() => {
+                        handerClick(index);
+                        setCodeItem(data.code);
+                      }}>
+                      <td>{data.code}</td>
+                      <td>{data.name}</td>
+                      {username === " admin" && <td>{data.phone_number}</td>}
+                      <td>{RenderTime(data.created_on)}</td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
       <div>
@@ -308,66 +311,68 @@ const Myself = () => {
                 {dataItem.district && <p>Địa chỉ {dataItem.district}</p>}
                 {username === " admin" && <p>SDT: {dataItem.phone_number}</p>}
               </div>
-
-              <table className=" table table-bordered border-black">
-                <thead>
-                  <tr>
-                    <th>STT</th>
-                    <th>Tên sản phẩm</th>
-                    {/* <th>Giá</th>
+              <div className="wrapper">
+                {" "}
+                <table className=" table table-bordered border-black">
+                  <thead>
+                    <tr>
+                      <th>STT</th>
+                      <th>Tên sản phẩm</th>
+                      {/* <th>Giá</th>
                     <th>Số lượng</th> */}
-                    <th>Tag</th>
-                    <th>KTV</th>
-                    <th>Ghi chú</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {myuser[myuserIndex].list_items.map((dataItem, index) => {
-                    // console.log(dataItem.text);
-                    return (
-                      <tr
-                      // onClick={() => {
-                      //   setIndexItem(dataItem);
-                      // }}
-                      >
-                        <td>{index + 1}</td>
-                        <td>{dataItem.name_item}</td>
-                        {/* <td>{dataItem.price}</td>
+                      <th>Tag</th>
+                      <th>KTV</th>
+                      <th>Ghi chú</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {myuser[myuserIndex].list_items.map((dataItem, index) => {
+                      // console.log(dataItem.text);
+                      return (
+                        <tr
+                        // onClick={() => {
+                        //   setIndexItem(dataItem);
+                        // }}
+                        >
+                          <td>{index + 1}</td>
+                          <td>{dataItem.name_item}</td>
+                          {/* <td>{dataItem.price}</td>
                         <td>
                           {dataItem.quantity} {dataItem.unit}
                         </td> */}
-                        <td>{dataItem.tag || ""}</td>
-                        <td>
-                          {dataItem.ktv &&
-                            dataItem.ktv.map((user) => user.value)}
-                        </td>
-                        <td>
-                          {dataItem.text &&
-                            dataItem.text.map((item) => <li>{item}</li>)}
-                        </td>
+                          <td>{dataItem.tag || ""}</td>
+                          <td>
+                            {dataItem.ktv &&
+                              dataItem.ktv.map((user) => user.value)}
+                          </td>
+                          <td>
+                            {dataItem.text &&
+                              dataItem.text.map((item) => <li>{item}</li>)}
+                          </td>
 
-                        <td>
-                          <input
-                            type="text"
-                            onClick={() => setIndexCodeItem(index)}
-                            // value={changeInput}
-                            onChange={(e) => setchangeInput(e.target.value)}
-                          />
-                        </td>
-                        <td>
-                          <button
-                            onClick={() => {
-                              editItems();
-                            }}>
-                            Lưu
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                          <td>
+                            <input
+                              type="text"
+                              onClick={() => setIndexCodeItem(index)}
+                              // value={changeInput}
+                              onChange={(e) => setchangeInput(e.target.value)}
+                            />
+                          </td>
+                          <td>
+                            <button
+                              onClick={() => {
+                                editItems();
+                              }}>
+                              Lưu
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         )}

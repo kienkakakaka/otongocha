@@ -174,7 +174,7 @@ const Renderlistimg = () => {
           list.map((item) => {
             if (item.type === "img") {
               return (
-                <div className="col-3">
+                <div className="col-lg-3 col-md-4 col-sm-6 mt-3">
                   <Card
                     style={{ margin: "10px 0" }}
                     bodyStyle={{ padding: 0 }}

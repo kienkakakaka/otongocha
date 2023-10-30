@@ -5,10 +5,13 @@ const Notifications = () => {
   const username = localStorage.getItem("user");
   const { readDatabase } = useContext(UserContext);
   const [dataDayOff, setDataDayOff] = useState([]);
+  const [month, setMonth] = useState(new Date().getMonth());
+  const [year, setYear] = useState(new Date().getFullYear());
 
   useEffect(() => {
     readDatabase(`datadayoff/data`, setDataDayOff);
   }, []);
+  console.log(dataDayOff);
   const datauser =
     dataDayOff &&
     dataDayOff
@@ -48,8 +51,8 @@ const Notifications = () => {
           <td>{item.textadmin}</td>
           <td>
             {item.success === "wait" && "Chờ duyệt"}
-            {item.success === "ok" && "Đã duyệt"}
-            {item.success === "no" && "Từ chối"}
+            {item.success === "ok" && `${item.usersucsess} đã duyệt`}
+            {item.success === "no" && `${item.usersucsess} từ chối`}
           </td>
         </tr>
       );

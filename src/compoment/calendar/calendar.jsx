@@ -17,6 +17,8 @@ import { MyContext } from "../../usecontex/usecontex1";
 import Notifications from "./notifications";
 
 const Calendar = () => {
+  const position = localStorage.getItem("position");
+  const manager = position === "Trưởng phòng";
   const { Messenger } = useContext(MyContext);
   const uid = uuidv4();
   const username = localStorage.getItem("user");
@@ -32,7 +34,6 @@ const Calendar = () => {
   const [year, setYear] = useState(today.getFullYear());
   const [hours, setHours] = useState(today.getHours());
   const [minutes, setMinutes] = useState(today.getMinutes());
-
   const [arrLastDate, setarrLastDate] = useState([]);
   const [arrNextDate, setarrNextDate] = useState([]);
   const [events, setEvents] = useState();
@@ -230,23 +231,7 @@ const Calendar = () => {
     }
     arrday[indexEditDay].value[dayEvent].isSelect = valueSelect;
     arrday[indexEditDay].value[dayEvent].success = "wait";
-    // arrday[indexEditDay].value[dayEvent].success = false;
-
     writeDatabase(`/user/${username}/value`, arrday);
-
-    // let indexValueoffdate;
-    // if (dataDayOff !== null) {
-    //   indexValueoffdate = dataDayOff.findIndex(
-    //     (day) =>
-    //       day.username === username &&
-    //       day.day === dayEvent &&
-    //       day.month === month &&
-    //       day.year === year
-    //   );
-    // }
-
-    // console.log(indexValueoffdate);
-
     if (dataDayOff !== null) {
       const indexValueoffdate = dataDayOff.findIndex(
         (day) =>
@@ -263,6 +248,7 @@ const Calendar = () => {
         let dataEventDay = [
           ...dataDayOff,
           {
+            admin: manager,
             username: username,
             titel: valueSelect,
             timeHours: hours,
@@ -273,7 +259,6 @@ const Calendar = () => {
             year: year,
             text: whyoffday,
             milisecend: today.getMilliseconds(),
-
             success: "wait",
           },
         ];
@@ -282,6 +267,7 @@ const Calendar = () => {
     } else {
       let dataEventDay = [
         {
+          admin: manager,
           username: username,
           titel: valueSelect,
           timeHours: hours,
@@ -303,23 +289,23 @@ const Calendar = () => {
 
   return (
     <div className="container">
-      <Row gutter={16}>
-        <Col span={8}>
+      <div className="row">
+        <div className="col-lg-4 col-md-6 col-sm-6 mt-3">
           <Card title="Số ngày công tháng này" bordered={false}>
             <h1>{calculatedResult}</h1>
           </Card>
-        </Col>
-        <Col span={8}>
+        </div>
+        <div className="col-lg-4 col-md-6 col-sm-6 mt-3">
           <Card title="Số ngày nghỉ" bordered={false}>
             <h1>{calculatedResult2}</h1>
           </Card>
-        </Col>
-        <Col span={8}>
+        </div>
+        <div className="col-lg-4 col-md-6 col-sm-6 mt-3">
           <Card title="Số ngày nghỉ phép" bordered={false}>
             <h1>đơn nghỉ</h1>
           </Card>
-        </Col>
-      </Row>
+        </div>
+      </div>
       <div className={style.body}>
         <div className={style.container}>
           <div className={style.month}>

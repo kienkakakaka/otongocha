@@ -8,6 +8,7 @@ import style from "./form.module.scss";
 import { MyContext } from "../../usecontex/usecontex1";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { CalendarOutlined } from "@ant-design/icons";
 const dataEdit = data.orders.map((data) => ({
   code: data.code,
   phone_number: data.customer_data.phone_number,
@@ -148,10 +149,11 @@ const Form = () => {
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
           />
+
           <button
             className="btn btn-success"
             onClick={() => setShowDatePicker((pre) => !pre)}>
-            Tìm theo ngày
+            <CalendarOutlined />
           </button>
           <div style={{ position: "absolute", right: "0", top: "40px" }}>
             {showDatePicker && (
@@ -159,27 +161,30 @@ const Form = () => {
             )}
           </div>
         </div>
-        <table className=" table table-bordered border-black">
-          <thead>
-            <tr>
-              <th>Mã đơn</th>
-              <th>Khách hàng</th>
-              <th>SDT</th>
-              <th>Thời gian tạo</th>
-            </tr>
-          </thead>
-          <tbody>
-            {getPageData(page) &&
-              getPageData(page).map((data, index) => (
-                <tr onClick={() => handerClick(data.code)}>
-                  <td>{data.code}</td>
-                  <td style={{ maxWidth: "500px" }}>{data.name}</td>
-                  <td>{data.phone_number}</td>
-                  <td>{RenderTime(data.created_on)}</td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
+        <div className="wrapper">
+          {" "}
+          <table className=" table table-bordered border-black bg-white">
+            <thead>
+              <tr>
+                <th>Mã đơn</th>
+                <th>Khách hàng</th>
+                <th>SDT</th>
+                <th>Thời gian tạo</th>
+              </tr>
+            </thead>
+            <tbody>
+              {getPageData(page) &&
+                getPageData(page).map((data, index) => (
+                  <tr onClick={() => handerClick(data.code)}>
+                    <td>{data.code}</td>
+                    <td style={{ maxWidth: "500px" }}>{data.name}</td>
+                    <td>{data.phone_number}</td>
+                    <td>{RenderTime(data.created_on)}</td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
       </div>
       <div>
         {hinderTable && dataItemArr[indexArr] && (
@@ -204,70 +209,72 @@ const Form = () => {
                 )}
                 <p>SDT: {dataItemArr[indexArr].phone_number}</p>
               </div>
-
-              <table className=" table table-bordered border-black">
-                <thead>
-                  <tr>
-                    <th>STT</th>
-                    <th>Tên sản phẩm</th>
-                    <th>Giá</th>
-                    <th>Số lượng</th>
-                    <th>Tag</th>
-                    <th>KTV</th>
-                    <th>Ghi chú</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {dataItemArr[indexArr].list_items &&
-                    dataItemArr[indexArr].list_items.map((item, index) => (
-                      <tr
-                        onClick={() => {
-                          setIndexItem(index);
-                        }}>
-                        <td>{index + 1}</td>
-                        <td>{item.name_item}</td>
-                        <td>{item.price}</td>
-                        <td>
-                          {item.quantity} {item.unit}
-                        </td>
-                        <td>{item.tag || ""}</td>
-                        {hinderEdit && (
+              <div className="wrapper">
+                {" "}
+                <table className=" table table-bordered border-black">
+                  <thead>
+                    <tr>
+                      <th>STT</th>
+                      <th>Tên sản phẩm</th>
+                      <th>Giá</th>
+                      <th>Số lượng</th>
+                      <th>Tag</th>
+                      <th>KTV</th>
+                      <th>Ghi chú</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {dataItemArr[indexArr].list_items &&
+                      dataItemArr[indexArr].list_items.map((item, index) => (
+                        <tr
+                          onClick={() => {
+                            setIndexItem(index);
+                          }}>
+                          <td>{index + 1}</td>
+                          <td>{item.name_item}</td>
+                          <td>{item.price}</td>
                           <td>
-                            <Select
-                              isMulti
-                              value={item.ktv}
-                              name="colors"
-                              onChange={(option) => {
-                                handerSelect(option);
-                              }}
-                              options={datauserktv}
-                              className="basic-multi-select"
-                              classNamePrefix="select"
-                            />
+                            {item.quantity} {item.unit}
                           </td>
-                        )}
-                        <td onClick={() => setOpentex(true)}>
-                          {item.text}{" "}
-                          {opentext && (
-                            <input
-                              type="text"
-                              onChange={(e) => setchangeInput(e.target.value)}
-                            />
+                          <td>{item.tag || ""}</td>
+                          {hinderEdit && (
+                            <td>
+                              <Select
+                                isMulti
+                                value={item.ktv}
+                                name="colors"
+                                onChange={(option) => {
+                                  handerSelect(option);
+                                }}
+                                options={datauserktv}
+                                className="basic-multi-select"
+                                classNamePrefix="select"
+                              />
+                            </td>
                           )}
-                        </td>
-                        <td>
-                          <button
-                            onClick={() => {
-                              editItems(index);
-                            }}>
-                            Lưu
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
+                          <td onClick={() => setOpentex(true)}>
+                            {item.text}{" "}
+                            {opentext && (
+                              <input
+                                type="text"
+                                onChange={(e) => setchangeInput(e.target.value)}
+                              />
+                            )}
+                          </td>
+                          <td>
+                            <button
+                              onClick={() => {
+                                editItems(index);
+                              }}>
+                              Lưu
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         )}
