@@ -34,7 +34,7 @@ const Notifications = () => {
       return (
         <tr>
           <td>
-            {item.day + 1}/{item.month}/{item.year}
+            {item.day + 1}/{item.month + 1}/{item.year}
           </td>
           <td>
             {item.titel === "offfullday" ? "Nghỉ nguyên ngày" : ""}
@@ -45,7 +45,7 @@ const Notifications = () => {
             {" "}
             {item.timeHours}:{item.timeMinutes}
             {"  "}
-            {item.dayevent}/{item.month}/{item.year}
+            {item.dayevent}/{item.month + 1}/{item.year}
           </td>
           <td>{item.text}</td>
           <td>{item.textadmin}</td>

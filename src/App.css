@@ -116,12 +116,6 @@ a:focus {
   material-icons  copy & paste form site google material-icons
   ==================================================*/
 
-.wrapper {
-  position: relative;
-  width: 100%;
-  overflow: auto;
-}
-
 /* ---------------------------------------------------
     SIDEBAR STYLE start
 ----------------------------------------------------- */
@@ -681,11 +675,19 @@ footer .copyright {
 }
 
 /*===============small-screen overlay sidebar design media queries==============*/
-
+@media only screen and (max-width: 600px) {
+  .wrapper {
+    /* position: relative; */
+    /* width: 100%; */
+    min-height: 500px;
+    overflow-x: auto;
+  }
+}
 @media only screen and (max-width: 992px) {
   #sidebar.active {
     transform: translatex(0);
   }
+
   #sidebar {
     position: fixed;
     top: 0;

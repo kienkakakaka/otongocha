@@ -31,7 +31,7 @@ export const UserProvider = ({ children }) => {
   const readDatabase = (url, setkey) => {
     onValue(ref(db, `/${url}`), (snapshot) => {
       const data = snapshot.val();
-
+      console.log(url, data);
       setkey(data);
     });
   };

@@ -84,6 +84,9 @@ const Manageoffday = () => {
   console.log(super_admin);
   return (
     <div className="wrapper">
+      <h1 className="text-center text-4xl m-2 font-medium">
+        Đơn xin nghỉ phép
+      </h1>
       <table className="table table-bordered border-black">
         <thead>
           <tr>
@@ -118,7 +121,7 @@ const Manageoffday = () => {
                     <tr>
                       <td>{item.username}</td>
                       <td>
-                        {item.day + 1}/{item.month}/{item.year}
+                        {item.day + 1}/{item.month + 1}/{item.year}
                       </td>
                       <td>
                         {item.titel === "offfullday" ? "Nghỉ nguyên ngày" : ""}
@@ -129,7 +132,7 @@ const Manageoffday = () => {
                       <td>
                         {item.timeHours}:{item.timeMinutes}
                         {"  "}
-                        {item.dayevent}/{item.month}/{item.year}
+                        {item.dayevent}/{item.month + 1}/{item.year}
                       </td>
                       <td>
                         {item.success === "wait" && "Chờ duyệt"}

@@ -139,6 +139,7 @@ const Event = () => {
 
   return (
     <div className={` container ${style.container}`}>
+      <h2 className="font-semibold">Dữ liệu xe</h2>
       <button
         className={`btn btn-primary mb-3 mt-3 ${style.btn}`}
         onClick={() => {
@@ -349,7 +350,7 @@ const Event = () => {
                       onClick={() => {
                         setSearchText(data.Conten);
                         Messenger("success", "Tham chiếu thành công");
-                        history("/form");
+                        history("/");
                       }}>
                       Tham chiếu
                     </button>

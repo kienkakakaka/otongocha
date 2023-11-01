@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import data from "../../data/data1.json";
+// import data from "../../data/data1.json";
 import { db } from "../../config";
 import { UserContext } from "../../usecontex/usecontex";
 import Select from "react-select";
@@ -8,25 +8,26 @@ import style from "./form.module.scss";
 import { MyContext } from "../../usecontex/usecontex1";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { CalendarOutlined } from "@ant-design/icons";
-const dataEdit = data.orders.map((data) => ({
-  code: data.code,
-  phone_number: data.customer_data.phone_number,
-  name: data.customer_data.name,
-  id: data.customer_data.name.match(/\d+[A-Z]-\d+\.\d+/)
-    ? data.customer_data.name.match(/\d+[A-Z]-\d+\.\d+/)[0]
-    : null,
-  created_on: data.created_on,
-  district: data.customer_data.addresses[0].district,
-  list_items: data.order_line_items.map((data) => ({
-    name_item: data.product_name,
-    price: data.price,
-    tag: data.note,
-    quantity: data.quantity,
-    unit: data.unit,
-    ktv: [],
-  })),
-}));
+import { CalendarOutlined, SendOutlined } from "@ant-design/icons";
+import { ref, set } from "firebase/database";
+// const dataEdit = data.orders.map((data) => ({
+//   code: data.code,
+//   phone_number: data.customer_data.phone_number,
+//   name: data.customer_data.name,
+//   id: data.customer_data.name.match(/\d+[A-Z]-\d+\.\d+/)
+//     ? data.customer_data.name.match(/\d+[A-Z]-\d+\.\d+/)[0]
+//     : null,
+//   created_on: data.created_on,
+//   district: data.customer_data.addresses[0].district,
+//   list_items: data.order_line_items.map((data) => ({
+//     name_item: data.product_name,
+//     price: data.price,
+//     tag: data.note,
+//     quantity: data.quantity,
+//     unit: data.unit,
+//     ktv: [],
+//   })),
+// }));
 const Form = () => {
   const {
     setmyUser,
@@ -40,7 +41,7 @@ const Form = () => {
     setSearchText,
   } = useContext(UserContext);
   const { RenderTime, dataItemArr, setDataItemArr } = useContext(MyContext);
-
+  console.log(dataItemArr);
   const { Messenger } = useContext(MyContext);
   const datauserktv = [
     { value: "kienktv", label: "kienktv" },
@@ -57,16 +58,16 @@ const Form = () => {
   const [hinderTable, setHinderTable] = useState(false);
   const [ktvJoin, setKtvJoin] = useState("");
   const [opentext, setOpentex] = useState(false);
-  const [hinderEdit, setHinderEdit] = useState(true);
+
   const [save, setSave] = useState(false);
   const [dataItem, setDataItem] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
-  if (dataItemArr === null) {
-    writeDatabase(`data_items_car`, dataEdit);
-  }
+  // if (dataItemArr === null) {
+  //   writeDatabase(`data_items_car`, dataEdit);
+  // }
   const handerClick = (code) => {
     let index = dataItemArr.findIndex((item) => item.code === code);
     setIndexArr(index);
@@ -74,10 +75,13 @@ const Form = () => {
     setHinderTable(true);
   };
   const handerSelect = (option) => {
-    setKtvJoin(option);
+    // setKtvJoin(option);
+    console.log(option);
     const data_edit_arr = [...dataItemArr];
     data_edit_arr[indexArr].list_items[indexItem].ktv = option;
-    writeDatabase(`data_items_car`, data_edit_arr);
+    console.log(data_edit_arr);
+    set(ref(db, "data_items_car/data"), data_edit_arr);
+    // writeDatabase(`data_items_car`, data_edit_arr);
   };
 
   const handleDateChange = (data) => {
@@ -91,17 +95,17 @@ const Form = () => {
   };
 
   const editItems = () => {
+    setOpentex(false);
     const data_edit_arr = [...dataItemArr];
     const dataid = data_edit_arr[indexArr].list_items[indexItem];
     const newText = `${username1}:${changeInput}`;
-    dataid.ktv = ktvJoin;
+    // dataid.ktv = ktvJoin;
     if (changeInput.trim() !== "") {
       if (dataid.text === undefined) {
         dataid.text = [newText];
       } else dataid.text = [...dataid.text, newText];
     }
-
-    setOpentex(false);
+    setchangeInput("");
     writeDatabase(`data_items_car`, data_edit_arr);
   };
   const data_item_render =
@@ -118,14 +122,15 @@ const Form = () => {
         })
       : dataItemArr;
 
-  const totalItems = data_item_render.length;
+  const totalItems = data_item_render && data_item_render.length;
   //   const pageNumber = 1;
   const getPageData = (pageNumber) => {
     const startIndex = (pageNumber - 1) * pageSize;
     const endIndex = startIndex + pageSize;
     let pageData;
     if (totalItems !== 0) {
-      pageData = data_item_render.slice(startIndex, endIndex);
+      pageData =
+        data_item_render && data_item_render.slice(startIndex, endIndex);
 
       return pageData;
     }
@@ -136,6 +141,7 @@ const Form = () => {
   const handlePageChange = (pageNumber) => {
     setPage(pageNumber);
   };
+  console.log(data_item_render);
   return (
     <>
       <div className="container-fluid">
@@ -187,7 +193,7 @@ const Form = () => {
         </div>
       </div>
       <div>
-        {hinderTable && dataItemArr[indexArr] && (
+        {hinderTable && dataItemArr && dataItemArr[indexArr] && (
           <div className={style.oveplay}>
             <div style={{ overflow: "auto" }} className={style.oveplayconten}>
               <button
@@ -215,11 +221,11 @@ const Form = () => {
                   <thead>
                     <tr>
                       <th>STT</th>
-                      <th>Tên sản phẩm</th>
+                      <th style={{ minWidth: "200px" }}>Tên sản phẩm</th>
                       <th>Giá</th>
                       <th>Số lượng</th>
                       <th>Tag</th>
-                      <th>KTV</th>
+                      <th style={{ minWidth: "100px" }}>KTV</th>
                       <th>Ghi chú</th>
                       <th></th>
                     </tr>
@@ -238,37 +244,50 @@ const Form = () => {
                             {item.quantity} {item.unit}
                           </td>
                           <td>{item.tag || ""}</td>
-                          {hinderEdit && (
-                            <td>
-                              <Select
-                                isMulti
-                                value={item.ktv}
-                                name="colors"
-                                onChange={(option) => {
-                                  handerSelect(option);
-                                }}
-                                options={datauserktv}
-                                className="basic-multi-select"
-                                classNamePrefix="select"
-                              />
-                            </td>
-                          )}
+
+                          <td>
+                            <Select
+                              isMulti
+                              value={item.ktv}
+                              name="colors"
+                              onChange={(option) => {
+                                handerSelect(option);
+                              }}
+                              options={datauserktv}
+                              className="basic-multi-select"
+                              classNamePrefix="select"
+                              styles={{
+                                dropdownIndicator: (base) => ({
+                                  ...base,
+                                  display: "none",
+                                }),
+                                clearIndicator: (base) => ({
+                                  ...base,
+                                  display: "none",
+                                }),
+                              }}
+                            />
+                          </td>
+
                           <td onClick={() => setOpentex(true)}>
-                            {item.text}{" "}
+                            <ul>
+                              {item.text &&
+                                item.text.map((item) => <li>{item}</li>)}
+                            </ul>
+
                             {opentext && (
-                              <input
-                                type="text"
-                                onChange={(e) => setchangeInput(e.target.value)}
-                              />
+                              <>
+                                <input
+                                  type="text"
+                                  onChange={(e) =>
+                                    setchangeInput(e.target.value)
+                                  }
+                                />
+                              </>
                             )}
                           </td>
                           <td>
-                            <button
-                              onClick={() => {
-                                editItems(index);
-                              }}>
-                              Lưu
-                            </button>
+                            <button onClick={() => editItems()}>Lưu</button>
                           </td>
                         </tr>
                       ))}

@@ -2,12 +2,14 @@ import React, { useContext, useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { UserContext } from "./usecontex";
 import { getDatabase, push, ref as dbRef, set } from "firebase/database";
-// import data from "../data/data2.json";
+import data from "../data/data5.json";
+console.log(data);
 export const MyContext = React.createContext();
 export const MyProvider = ({ children }) => {
   const username = localStorage.getItem("user");
   const super_admin = username === "giamdoc";
   const [dataItemArr, setDataItemArr] = useState([]);
+  console.log(dataItemArr);
   const [idItemCars, setIdItemCars] = useState([]);
   const [itemsNote, setItemnote] = useState([]);
   const [dataOrder, setDataOrder] = useState([]);
@@ -59,26 +61,27 @@ export const MyProvider = ({ children }) => {
     const minutes = date.getMinutes();
     return `${hours}:${minutes} ${day}/${month}/${year}`;
   };
-  // const dataEdit = data.map((data) => ({
-  //   code: data.code,
-  //   phone_number: data.customer_data.phone_number,
-  //   name: data.customer_data.name,
-  //   id: data.customer_data.name.match(/\d+[A-Z]-\d+\.\d+/)
-  //     ? data.customer_data.name.match(/\d+[A-Z]-\d+\.\d+/)[0]
-  //     : null,
-  //   created_on: data.created_on,
-  //   district: data.customer_data.addresses[0]?.address1 ?? null,
-  //   list_items: data.order_line_items.map((data) => ({
-  //     name_item: data.product_name,
-  //     price: data.price,
-  //     tag: data.note,
-  //     quantity: data.quantity,
-  //     unit: data.unit,
-  //     ktv: [],
-  //   })),
-  // }));
+
+  const dataEdit = data.map((data) => ({
+    code: data.code,
+    phone_number: data.customer_data.phone_number,
+    name: data.customer_data.name,
+    id: data.customer_data.name.match(/\d+[A-Z]-\d+\.\d+/)
+      ? data.customer_data.name.match(/\d+[A-Z]-\d+\.\d+/)[0]
+      : null,
+    created_on: data.created_on,
+    district: data.customer_data.addresses[0]?.address1 ?? null,
+    list_items: data.order_line_items.map((data) => ({
+      name_item: data.product_name,
+      price: data.price,
+      tag: data.note,
+      quantity: data.quantity,
+      unit: data.unit,
+      ktv: [],
+    })),
+  }));
   // writeDatabase(`data_items_car`, dataEdit);
-  const noteItems = idItemCars
+  const noteItems = dataItemArr
     ? dataItemArr.filter((data) => {
         return data.id && data.id.includes(idItemCars);
       })

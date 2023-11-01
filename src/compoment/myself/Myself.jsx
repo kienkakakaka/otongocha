@@ -45,9 +45,14 @@ const Myself = () => {
     const results =
       dataItemArr &&
       dataItemArr.filter((data) => {
-        return data.list_items.some((item) => {
-          return item.ktv && item.ktv.some((ktv) => ktv.value === username);
-        });
+        return (
+          data.list_items &&
+          data.list_items.some((item) => {
+            console.log(item);
+            if (item.ktv === undefined) return;
+            return item.ktv && item.ktv.some((ktv) => ktv.value === username);
+          })
+        );
       });
     setmyUser(results);
     // console.log(results);
@@ -344,7 +349,7 @@ const Myself = () => {
                           <td>{dataItem.tag || ""}</td>
                           <td>
                             {dataItem.ktv &&
-                              dataItem.ktv.map((user) => user.value)}
+                              dataItem.ktv.map((user) => <li>{user.value}</li>)}
                           </td>
                           <td>
                             {dataItem.text &&

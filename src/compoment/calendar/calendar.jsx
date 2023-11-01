@@ -29,9 +29,10 @@ const Calendar = () => {
   const [daysss, setday] = useState(today.getDay());
   const [dataDayOff, setDataDayOff] = useState([]);
   const [whyoffday, setWhyoffday] = useState("");
-  const [date, setDate] = useState(today.getDate());
   const [month, setMonth] = useState(today.getMonth());
+  const [date, setDate] = useState(today.getDate());
   const [year, setYear] = useState(today.getFullYear());
+  const lastDays = new Date(year, month + 1, 0).getDate();
   const [hours, setHours] = useState(today.getHours());
   const [minutes, setMinutes] = useState(today.getMinutes());
   const [arrLastDate, setarrLastDate] = useState([]);
@@ -80,20 +81,6 @@ const Calendar = () => {
       // console.log(indexEditDay);
       arrDates = arrDate[indexEditDay].value;
     }
-  }
-  if (indexEditDay && arrDate[indexEditDay]) {
-    const arrr = [...arrDate];
-    console.log(arrDate[indexEditDay]);
-    const items = arrr[indexEditDay].value;
-    for (let i = 0; i < items.length; i++) {
-      const element = items[i];
-
-      if (!element.isSelect && element.value < date) {
-        element.isSelect = "nooff";
-        console.log(element);
-      }
-    }
-    writeDatabase(`/user/${username}/value`, arrr);
   }
 
   useEffect(() => {
@@ -149,6 +136,24 @@ const Calendar = () => {
         let Arrdata = [...arrDate, { month: month, year: year, value: values }];
 
         writeDatabase(`/user/${username}/value`, Arrdata);
+      }
+      if (indexEditDay !== -1) {
+        let arrdata = [...arrDate];
+        const index = arrdata.findIndex(
+          (arr) => arr.month === month && arr.year === year
+        );
+
+        const item = arrdata[index] && arrdata[index].value;
+
+        if (item) {
+          for (let i = 0; i < item.length; i++) {
+            const element = item[i];
+            if (element.isSelect === undefined && element.value < date) {
+              element.isSelect = "nooff";
+            }
+          }
+          writeDatabase(`/user/${username}/value`, arrdata);
+        }
       }
     }
   }, [today, year, month, arrDate]);
